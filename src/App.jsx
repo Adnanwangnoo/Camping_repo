@@ -210,12 +210,12 @@ const TREKS = [
 ];
 
 const GALLERY = [
-  { url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80", cap: "Aru Valley Panorama" },
-  { url: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80", cap: "Camp Setup" },
-  { url: "https://images.unsplash.com/photo-1476611338391-6f395a0dd82e?w=800&q=80", cap: "Royal Suits" },
-  { url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80", cap: "Alpine Meadows" },
-  { url: "https://images.unsplash.com/photo-1487730116645-74489c95b41b?w=800&q=80", cap: "Horse Riding" },
-  { url: "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=800&q=80", cap: "Swiss Tents" },
+  { url: "/images/WhatsApp Image 2026-05-02 at 2.41.53 PM.jpeg", cap: "Aru Valley Panorama" },
+  { url: "/images/WhatsApp Image 2026-05-02 at 2.43.15 PM.jpeg", cap: "Camp Setup" },
+  { url: "/images/royalsuits.jpeg", cap: "Royal Suits" },
+  { url: "/images/WhatsApp Image 2026-05-02 at 4.36.35 PM (1).jpeg", cap: "Alpine Meadows" },
+  { url: "/images/hourse.jpeg", cap: "Horse Riding" },
+  { url: "/images/hero.jpeg", cap: "Swiss Tents" },
 ];
 
 const TESTIMONIALS = [
@@ -511,8 +511,8 @@ function About() {
             </div>
           </div>
           <div className="about-img-grid">
-            <img src="/images/WhatsApp Image 2026-05-02 at 2.44.11 PM.jpeg" style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover" }} alt="Camp" />
-            <img src="/images/WhatsApp Image 2026-05-02 at 4.24.36 PM.jpeg" style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", marginTop: "2rem" }} alt="Trek" />
+            <img src="/images/WhatsApp Image 2026-05-02 at 2.44.11 PM.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "cover" }} alt="Camp" />
+            <img src="/images/WhatsApp Image 2026-05-02 at 4.24.36 PM.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "", marginTop: "3rem" }} alt="Trek" />
           </div>
         </div>
       </div>
