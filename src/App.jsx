@@ -210,10 +210,10 @@ const TREKS = [
 ];
 
 const GALLERY = [
-  { url: "/images/WhatsApp Image 2026-05-02 at 2.41.53 PM.jpeg", cap: "Aru Valley Panorama" },
-  { url: "/images/WhatsApp Image 2026-05-02 at 2.43.15 PM.jpeg", cap: "Camp Setup" },
+  { url: "/images/s2.jpeg", cap: "Aru Valley Panorama" },
+  { url: "/images/t2.jpeg", cap: "Camp Setup" },
   { url: "/images/royalsuits.jpeg", cap: "Royal Suits" },
-  { url: "/images/WhatsApp Image 2026-05-02 at 4.36.35 PM (1).jpeg", cap: "Alpine Meadows" },
+  { url: "/images/ph.jpeg", cap: "Alpine Meadows" },
   { url: "/images/hourse.jpeg", cap: "Horse Riding" },
   { url: "/images/hero.jpeg", cap: "Swiss Tents" },
 ];
@@ -255,7 +255,7 @@ const TESTIMONIALS = [
 function Logo({ size = 36 }) {
   return (
     <img
-      src="/images/aru camping logo.png"
+      src="/images/arulogo.png"
       alt="Aru Camping Logo"
       style={{
         width: size,
@@ -511,8 +511,8 @@ function About() {
             </div>
           </div>
           <div className="about-img-grid">
-            <img src="/images/WhatsApp Image 2026-05-02 at 2.44.11 PM.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "cover" }} alt="Camp" />
-            <img src="/images/WhatsApp Image 2026-05-02 at 4.24.36 PM.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "", marginTop: "3rem" }} alt="Trek" />
+            <img src="/images/tt.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "cover" }} alt="Camp" />
+            <img src="/images/fish.jpeg" style={{ width: "125%", aspectRatio: "3/4", objectFit: "", marginTop: "3rem" }} alt="Trek" />
           </div>
         </div>
       </div>
