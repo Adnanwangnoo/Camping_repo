@@ -243,13 +243,26 @@ const TESTIMONIALS = [
 ];
 
 // ── Reusable UI Components ────────────────────────────────────────────
-function Logo({ size = 36, color = C.forest }) {
+// function Logo({ size = 36, color = C.forest }) {
+//   return (
+//     <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
+//       <polygon points="24,3 38,30 10,30" fill={color} opacity="0.95" />
+//       <polygon points="15,19 27,42 3,42" fill={color} opacity="0.6" />
+//       <polygon points="33,19 45,42 21,42" fill={color} opacity="0.6" />
+//     </svg>
+//   );
+// }
+function Logo({ size = 36 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <polygon points="24,3 38,30 10,30" fill={color} opacity="0.95" />
-      <polygon points="15,19 27,42 3,42" fill={color} opacity="0.6" />
-      <polygon points="33,19 45,42 21,42" fill={color} opacity="0.6" />
-    </svg>
+    <img
+      src="/images/aru camping logo.png"
+      alt="Aru Camping Logo"
+      style={{
+        width: size,
+        height: size,
+        objectFit: "contain",
+      }}
+    />
   );
 }
 
