@@ -253,6 +253,20 @@
 //   { icon: "🧩", title: "Problem Solving", desc: "Thinking critically and finding creative solutions." },
 // ];
 
+// const MENU_TIMELINE = [
+//   { time: "Breakfast", icon: "🍳", items: "Tea, Boiled Eggs, Bread Butter & Jam, Choice of Poha / Upma / Halwa / Aloo Paratha" }, 
+//   { time: "Packed Lunch", icon: "🍱", items: "Veg Pulav / Fried Rice, Fruit Juice, Fresh Fruit" }, 
+//   { time: "Afternoon Tea", icon: "☕", items: "Hot Tea & Biscuits upon returning to camp" }, 
+//   { time: "Dinner", icon: "🍲", items: "1 Non-Veg & 1 Veg Dish, Lentils / Beans / Cheese Curry, Rice, Fresh Salad" } 
+// ];
+
+// const MEAL_VALUES = [
+//   { title: "Balanced Nutrition", desc: "Nutritious meals for active young minds", icon: "🥗" }, 
+//   { title: "Hygienic & Safe", desc: "Prepared with quality ingredients in a hygienic environment", icon: "✨" }, 
+//   { title: "Variety & Taste", desc: "Delicious meals with a mix of vegetarian and non-vegetarian", icon: "🥘" }, 
+//   { title: "Energy for Adventures", desc: "Meals designed to keep students active and energized", icon: "⚡" } 
+// ];
+
 // // ── EmailLink ─────────────────────────────────────────────────────────
 // function EmailLink({ email }) {
 //   const [copied, setCopied] = useState(false);
@@ -287,7 +301,7 @@
 //     <img
 //       src="/images/arulogo.png"
 //       alt="Aru Camping Logo"
-//       style={{ width: size, height: size, objectFit: "contain" }}
+//       style={{ width: size, height: size, objectFit: "contain",objectPosition: "bottom",borderRadius: "50%" }}
 //     />
 //   );
 // }
@@ -391,7 +405,7 @@
 //       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: C.cream, borderBottom: `2px solid ${C.forest}`, padding: "0 1.5rem 0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "66px" }}>
 //         {/* Logo */}
 //         <div style={{ display: "flex", alignItems: "center", gap: "9px", cursor: "pointer" }} onClick={() => navTo("home")}>
-//           <Logo size={30} />
+//           <Logo size={48} />
 //           <div>
 //             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "0.95rem", color: C.forest, fontWeight: 700, lineHeight: 1.1 }}>ARU CAMPING</div>
 //             <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.55rem", letterSpacing: "0.2em", color: C.forestLight, textTransform: "uppercase" }}>RESORT · ARU VALLEY</div>
@@ -597,7 +611,7 @@
 // // ── Student Section ───────────────────────────────────────────────────
 // function StudentPage({ setPage }) {
 //   return (
-//     <div style={{ background: C.cream, paddingBottom: "4rem" }}>
+//     <div style={{ background: C.cream, paddingBottom: "0" }}>
       
 //       {/* --- Section 1: Itineraries --- */}
 //       <section className="section-padded" style={{ padding: "6rem 2rem 4rem" }}>
@@ -651,34 +665,60 @@
 //         </div>
 //       </section>
 
-//       {/* --- Section 3: Safety & Meals Banner --- */}
-//       <section className="section-padded" style={{ padding: "2rem 2rem" }}>
-//         <div style={{ maxWidth: "1100px", margin: "0 auto", background: C.forest, padding: "4rem 3rem" }}>
-//           <div className="safety-grid">
+//       {/* --- Section 3: Meal Plan (NEW) --- */}
+//       <section className="section-padded" style={{ background: C.creamDark, padding: "5rem 2rem" }}>
+//         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+//           <div className="student-grid" style={{ alignItems: "start" }}>
             
-//             {/* Left Column */}
+//             {/* Left: Menu Timeline */}
 //             <div>
-//               <SectionLabel light>Safe Environment</SectionLabel>
-//               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(1.8rem, 3vw, 2.2rem)", color: C.cream, marginTop: "0.5rem", marginBottom: "1rem" }}>Safety & Supervision</h3>
-//               <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: "rgba(245,240,232,0.8)", lineHeight: 1.8, marginBottom: "0.5rem" }}>
-//                 24/7 staff supervision, restricted entry points, and first-aid support.
+//               <SectionLabel>Camp Nutrition</SectionLabel>
+//               <SectionTitle>Sample Daily Menu</SectionTitle>
+//               <p style={{ fontFamily: "'Lato', sans-serif", color: C.textMid, fontSize: "0.95rem", marginBottom: "2.5rem" }}>
+//                 Nutritious, wholesome, and tasty meals to keep students energized through every adventure.
 //               </p>
-//               <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: "rgba(245,240,232,0.8)", lineHeight: 1.8 }}>
-//                 Every aspect is managed for complete peace of mind.
-//               </p>
+              
+//               <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+//                 {MENU_TIMELINE.map((m, i) => (
+//                   <div key={i} style={{ display: "flex", gap: "1.2rem", background: C.white, padding: "1.2rem", border: `1px solid ${C.creamMid}` }}>
+//                     <div style={{ fontSize: "2rem", flexShrink: 0 }}>{m.icon}</div>
+//                     <div>
+//                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1rem", color: C.forest, marginBottom: "0.3rem" }}>{m.time}</div>
+//                       <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: C.textMid, lineHeight: 1.5 }}>{m.items}</div>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
 //             </div>
 
-//             {/* Divider Line */}
-//             <div className="safety-divider" style={{ background: C.gold, width: "2px", height: "100%", opacity: 0.8, minHeight: "120px" }}></div>
-
-//             {/* Right Column */}
-//             <div>
-//               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(1.8rem, 3vw, 2.2rem)", color: C.cream, marginBottom: "1rem" }}>Hygienic Meals</h3>
-//               <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: "rgba(245,240,232,0.8)", lineHeight: 1.8 }}>
-//                 Fresh, nutritious, and hygienic meals prepared in-house with quality ingredients.
-//               </p>
+//             {/* Right: Values Grid */}
+//             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignContent: "center", height: "100%" }}>
+//               {MEAL_VALUES.map((v, i) => (
+//                 <div key={i} style={{ background: C.forest, padding: "1.8rem", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+//                   <div style={{ fontSize: "2rem", marginBottom: "0.8rem" }}>{v.icon}</div>
+//                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "0.95rem", color: C.goldLight, marginBottom: "0.5rem" }}>{v.title}</div>
+//                   <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.8rem", color: C.cream, lineHeight: 1.5, fontWeight: 300 }}>{v.desc}</div>
+//                 </div>
+//               ))}
 //             </div>
-            
+
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* --- Section 4: Safety Banner --- */}
+//       <section style={{ padding: "0" }}>
+//         <div style={{ background: C.forest, padding: "4rem 2rem", textAlign: "center" }}>
+//           <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+//             <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🛡️</div>
+//             <SectionLabel center light>Our Highest Priority</SectionLabel>
+//             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(2rem, 4vw, 2.8rem)", color: C.cream, marginTop: "0.5rem", marginBottom: "1.5rem" }}>Safety & Supervision</h3>
+//             <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "1.05rem", color: "rgba(245,240,232,0.8)", lineHeight: 1.8, marginBottom: "1rem", fontWeight: 300 }}>
+//               24/7 staff supervision, restricted entry points, and complete first-aid support.
+//             </p>
+//             <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "1.05rem", color: "rgba(245,240,232,0.8)", lineHeight: 1.8, fontWeight: 300 }}>
+//               Every aspect of the experience is thoughtfully managed to ensure comfort, discipline, and peace of mind for schools.
+//             </p>
 //           </div>
 //         </div>
 //       </section>
@@ -960,7 +1000,7 @@
 //   );
 // }
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 // ── Brand Colors ──────────────────────────────────────────────────────
 const C = {
@@ -1061,12 +1101,22 @@ function injectCSS() {
     .nav-desktop { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
     .hamburger-btn { display: none; background: none; border: none; cursor: pointer; padding: 0.4rem; color: ${C.forest}; font-size: 1.5rem; line-height: 1; }
 
+    /* ── Detailed Itinerary Styles ── */
+    .day-card { background: ${C.white}; border: 1px solid ${C.creamMid}; padding: 2rem; display: flex; gap: 1.5rem; }
+    .day-number { background: ${C.forest}; color: ${C.cream}; font-family: 'Libre Baskerville', serif; width: 60px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+    .day-number span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Lato', sans-serif; }
+    .day-number strong { font-size: 1.5rem; line-height: 1; }
+    .itinerary-list { list-style: none; padding: 0; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .itinerary-list li { font-family: 'Lato', sans-serif; font-size: 0.9rem; color: ${C.textMid}; display: flex; gap: 0.75rem; align-items: flex-start; }
+    .itinerary-list li i { color: ${C.goldLight}; font-size: 0.8rem; margin-top: 0.2rem; }
+
     @media (max-width: 900px) {
       .nav-desktop { display: none !important; }
       .hamburger-btn { display: block; }
       .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
       .hero-btns { flex-direction: column; }
       .hero-btns button { width: 100%; }
+      .hero-logo-wrap { display: none; } /* Hides large logo on mobile */
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-img-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
       .about-img-grid img { aspect-ratio: 4/3 !important; margin-top: 0 !important; }
@@ -1079,10 +1129,10 @@ function injectCSS() {
       .student-grid { grid-template-columns: 1fr; gap: 2rem; }
       .takebacks-grid { grid-template-columns: 1fr 1fr; }
       .safety-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      .safety-divider { display: none; }
       .strip-grid { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
       .section-padded { padding: 4rem 1.25rem !important; }
       .hero-text-pad { padding: 0 1.5rem 0 1.5rem !important; }
+      .day-card { flex-direction: column; gap: 1rem; padding: 1.5rem; }
     }
 
     @media (max-width: 600px) {
@@ -1100,7 +1150,7 @@ function injectCSS() {
 }
 
 // ── Data ──────────────────────────────────────────────────────────────
-const PACKAGES = [
+const OFFERINGS = [
   {
     id: 1,
     icon: "☀️",
@@ -1117,14 +1167,6 @@ const PACKAGES = [
     aud: "College Groups",
     feats: ["Swiss Tent Stay", "Bonfire Evening", "Pony Ride", "Valley Trek", "All Meals"],
     pop: true,
-  },
-  {
-    id: 3,
-    icon: "🏔️",
-    name: "Glacier Expedition",
-    dur: "4D / 3N",
-    aud: "Trek Enthusiasts",
-    feats: ["Kolahai Glacier", "Alpine Lake", "Liddarwat Camp", "Expert Guide", "Full Board"],
   },
   {
     id: 4,
@@ -1146,67 +1188,159 @@ const TREKS = [
 const GALLERY = [
   { url: "/images/s2.jpeg", cap: "Aru Valley Panorama" },
   { url: "/images/t2.jpeg", cap: "Camp Setup" },
-  { url: "/images/royalsuits.jpeg", cap: "Royal Suits" },
+  { url: "/images/royalsuits.jpeg", cap: "The Alp Tents" },
   { url: "/images/ph.jpeg", cap: "Alpine Meadows" },
   { url: "/images/hourse.jpeg", cap: "Horse Riding" },
-  { url: "/images/hero.jpeg", cap: "Swiss Tents" },
+  { url: "/images/hero.jpeg", cap: "The Swiss Tents" },
 ];
 
 const TESTIMONIALS = [
-  {
-    id: 1,
-    name: "Dr. Rohan Sharma",
-    date: "April 2026",
-    rating: 5,
-    message: "A perfect, safe, and beautiful arrangement for our university group. The in-house kitchen served incredibly fresh and hot food, and the tents were perfectly comfortable.",
-  },
-  {
-    id: 2,
-    name: "Priya V.",
-    date: "March 2026",
-    rating: 5,
-    message: "Breathtaking views of the Kolahai Glacier trail. The local certified guide made all the difference in safety and historical knowledge of the trails. Highly recommended!",
-  },
-  {
-    id: 3,
-    name: "Principal K. L. Raina",
-    date: "May 2026",
-    rating: 5,
-    message: "Excellent arrangement for our school kids. Very disciplined and properly supervised with CCTV. The nature walks added great academic value to our trip.",
-  },
+  { id: 1, name: "Dr. Rohan Sharma", date: "April 2026", rating: 5, message: "A perfect, safe, and beautiful arrangement for our university group. The in-house kitchen served incredibly fresh and hot food, and the tents were perfectly comfortable." },
+  { id: 2, name: "Priya V.", date: "March 2026", rating: 5, message: "Breathtaking views of the Kolahai Glacier trail. The local certified guide made all the difference in safety and historical knowledge of the trails. Highly recommended!" },
+  { id: 3, name: "Principal K. L. Raina", date: "May 2026", rating: 5, message: "Excellent arrangement for our school kids. Very disciplined and properly supervised with CCTV. The nature walks added great academic value to our trip." },
 ];
 
 const SCHOOL_ITINERARIES = [
-  {
-    id: 1,
-    icon: "☀️",
-    name: "Summer School Camp",
-    dur: "1N / 2D Package",
-    feats: ["Arrival & Briefing", "Welcome Ice-breakers", "Guided Trek to Trail", "Group Feedback Session"],
-  },
-  {
-    id: 2,
-    icon: "⛺",
-    name: "Adventure & Exploration",
-    dur: "2N / 3D Package",
-    feats: ["Scenic Drive to Camp", "Nature Trail Trek", "Campfire & Games", "Morning Learning Session"],
-    pop: true,
-  },
-  {
-    id: 3,
-    icon: "🏔️",
-    name: "Lidderwatt Expedition",
-    dur: "3N / 4D Package",
-    feats: ["Trek to Lidderwatt Valley", "Village Life Interaction", "Shepherd Mud-House Visit", "Farewell Campfire"],
-  },
-  {
-    id: 4,
-    icon: "🎒",
-    name: "Institutional Special",
-    dur: "Custom Package",
-    feats: ["Expedition Leadership", "Glacier Exploration", "Outdoor Survival Basics", "CCTV Monitored Camp"],
-  },
+  { id: 1, icon: "☀️", name: "Summer School Camp", dur: "1N / 2D Package", feats: ["Arrival & Briefing", "Welcome Ice-breakers", "Guided Trek to Trail", "Group Feedback Session"] },
+  { id: 2, icon: "⛺", name: "Adventure & Exploration", dur: "2N / 3D Package", feats: ["Scenic Drive to Camp", "Nature Trail Trek", "Campfire & Games", "Morning Learning Session"], pop: true },
+  { id: 3, icon: "🏔️", name: "Lidderwatt Expedition", dur: "3N / 4D Package", feats: ["Trek to Lidderwatt Valley", "Village Life Interaction", "Shepherd Mud-House Visit", "Farewell Campfire"] },
+  { id: 4, icon: "🎒", name: "Institutional Special", dur: "Custom Package", feats: ["Expedition Leadership", "Glacier Exploration", "Outdoor Survival Basics", "CCTV Monitored Camp"] },
 ];
+
+// Extracted from PDFs
+const DETAILED_PLANS = {
+  1: {
+    title: "Summer School Camp",
+    subtitle: "Adventure. Learning. Memories that last.",
+    duration: "1 Night / 2 Days",
+    days: [
+      {
+        day: 1,
+        title: "Arrival & Orientation",
+        activities: [
+          "Scenic drive to camp",
+          "Camp check-in & tent allocation",
+          "Welcome briefing & ice-breaker activities",
+          "Afternoon tea",
+          "Dinner & overnight stay at the camp"
+        ]
+      },
+      {
+        day: 2,
+        title: "Adventure & Departure",
+        activities: [
+          "Morning activities & learning session",
+          "Breakfast",
+          "Guided trek to nearby trail",
+          "Rest, group photo & feedback",
+          "Lunch",
+          "Depart for home with memories to cherish forever"
+        ]
+      }
+    ],
+    inclusions: ["All Meals (Veg)", "Guided Activities", "Trained Staff & Supervision", "First Aid Support", "Hydration & Care"],
+    carry: ["Comfortable Clothing", "Sports Shoes", "Water Bottle", "Personal Toiletries", "Raincoat (If needed)"]
+  },
+  2: {
+    title: "Adventure & Exploration",
+    subtitle: "Explore nature. Build friendships. Grow together.",
+    duration: "2 Nights / 3 Days",
+    days: [
+      {
+        day: 1,
+        title: "Arrival & Orientation",
+        activities: [
+          "Scenic drive to camp",
+          "Camp check-in & tent allocation",
+          "Welcome briefing & ice-breaker activities",
+          "Afternoon tea",
+          "Dinner & overnight stay at the camp"
+        ]
+      },
+      {
+        day: 2,
+        title: "Adventure & Exploration",
+        activities: [
+          "Breakfast & trek briefing",
+          "Trek to scenic spot / nearby trail",
+          "Packed lunch amidst nature",
+          "Afternoon sports & fun activities",
+          "Campfire, games & sharing",
+          "Dinner & overnight stay at the camp"
+        ]
+      },
+      {
+        day: 3,
+        title: "Learn, Engage & Depart",
+        activities: [
+          "Morning activities & learning session",
+          "Breakfast",
+          "Group photo & feedback",
+          "Lunch",
+          "Depart for home with memories to cherish forever"
+        ]
+      }
+    ],
+    inclusions: ["All Meals (Veg)", "Guided Activities", "Trained Staff & Supervision", "First Aid Support", "Hydration & Care"],
+    carry: ["Comfortable Clothing", "Sports Shoes", "Water Bottle", "Personal Toiletries", "Raincoat (If needed)"]
+  },
+  3: {
+    title: "Lidderwatt Expedition",
+    subtitle: "A journey of adventure, culture, and engagement.",
+    duration: "3 Nights / 4 Days",
+    days: [
+      {
+        day: 1,
+        title: "Arrival & Orientation (Srinagar → Pahalgam → Aru)",
+        activities: [
+          "Scenic drive to Pahalgam (96 Kms / 2-3 hrs)",
+          "Drive to Aru (11 Kms / 30 mins) along Lidder Stream",
+          "Camp check-in & tent allocation",
+          "Welcome briefing & afternoon tea",
+          "Dinner and overnight stay at the resort"
+        ]
+      },
+      {
+        day: 2,
+        title: "Adventure & Exploration (Trek to Lidderwatt)",
+        activities: [
+          "Breakfast & trek briefing",
+          "Short trek to Lidderwatt (11 Kms/3000 M) through forests & rivers",
+          "Packed lunch amidst Himalayan landscapes",
+          "Trek back to camp",
+          "Afternoon tea & sports activities (Badminton, Volleyball, Cricket)",
+          "Dinner and overnight stay at the resort"
+        ]
+      },
+      {
+        day: 3,
+        title: "Culture & Engagement (Village Experience)",
+        activities: [
+          "Breakfast",
+          "Short trek to local Aru village",
+          "Interact with locals & experience their lifestyle",
+          "Visit shepherd families & mud houses, walk along stream",
+          "Return to camp for lunch & afternoon tea",
+          "Outdoor activities, team games & farewell campfire",
+          "Dinner and overnight stay at the resort"
+        ]
+      },
+      {
+        day: 4,
+        title: "Wrap-up & Departure",
+        activities: [
+          "Breakfast",
+          "Morning sports & light activities",
+          "Closing session, group photographs & feedback",
+          "Lunch",
+          "Depart for Srinagar with a heart full of memories"
+        ]
+      }
+    ],
+    inclusions: ["Tented Accommodation", "All Meals", "Guided Activities & Treks", "On-site Support & Supervision", "First Aid Support"],
+    carry: ["Sleeping Bag", "Warm Clothing", "Torch", "Personal Medication", "Water Bottle", "Personal Toiletries"]
+  }
+};
 
 const TAKE_BACKS = [
   { icon: "🧭", title: "Leadership", desc: "Inspiring others and leading with purpose." },
@@ -1229,27 +1363,17 @@ const MEAL_VALUES = [
   { title: "Energy for Adventures", desc: "Meals designed to keep students active and energized", icon: "⚡" } 
 ];
 
-// ── EmailLink ─────────────────────────────────────────────────────────
+// ── Reusable Components ───────────────────────────────────────────────
 function EmailLink({ email }) {
   const [copied, setCopied] = useState(false);
-
   const handleCopy = (e) => {
-    e.preventDefault();
-    navigator.clipboard.writeText(email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    e.preventDefault(); navigator.clipboard.writeText(email);
+    setCopied(true); setTimeout(() => setCopied(false), 2000);
   };
-
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-      <a href={`mailto:${email}`} style={{ color: "inherit", textDecoration: "underline", cursor: "pointer" }}>
-        {email}
-      </a>
-      <button
-        onClick={handleCopy}
-        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.7rem", color: C.forestLight }}
-        title="Copy to clipboard"
-      >
+      <a href={`mailto:${email}`} style={{ color: "inherit", textDecoration: "underline", cursor: "pointer" }}>{email}</a>
+      <button onClick={handleCopy} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.7rem", color: C.forestLight }} title="Copy to clipboard">
         <i className={copied ? "fa-solid fa-check" : "fa-solid fa-copy"}></i>
         {copied && <span style={{ marginLeft: "4px", fontSize: "0.6rem" }}>Copied!</span>}
       </button>
@@ -1257,13 +1381,12 @@ function EmailLink({ email }) {
   );
 }
 
-// ── Logo ──────────────────────────────────────────────────────────────
 function Logo({ size = 36, color }) {
   return (
     <img
       src="/images/arulogo.png"
       alt="Aru Camping Logo"
-      style={{ width: size, height: size, objectFit: "contain",objectPosition: "bottom",borderRadius: "50%" }}
+      style={{ width: size, height: size, objectFit: "contain", objectPosition: "bottom", borderRadius: "50%" }}
     />
   );
 }
@@ -1299,10 +1422,8 @@ function Btn({ children, onClick, v = "primary", full = false, sm = false }) {
     fontFamily: "'Lato', sans-serif", fontWeight: 700, letterSpacing: "0.1em",
     textTransform: "uppercase", cursor: "pointer", border: "2px solid",
     transition: "opacity .2s", width: full ? "100%" : "auto",
-    fontSize: sm ? "0.68rem" : "0.78rem",
-    padding: sm ? "0.45rem 1.1rem" : "0.8rem 1.9rem",
-    display: "inline-block", textAlign: "center",
-    minHeight: "44px",
+    fontSize: sm ? "0.68rem" : "0.78rem", padding: sm ? "0.45rem 1.1rem" : "0.8rem 1.9rem",
+    display: "inline-block", textAlign: "center", minHeight: "44px",
   };
   const vs = {
     primary: { ...base, background: C.forest, borderColor: C.forest, color: C.cream },
@@ -1312,60 +1433,38 @@ function Btn({ children, onClick, v = "primary", full = false, sm = false }) {
     danger: { ...base, background: C.red, borderColor: C.red, color: C.white },
   };
   return (
-    <button style={vs[v]} onClick={onClick}
-      onMouseOver={(e) => (e.currentTarget.style.opacity = "0.82")}
-      onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}>
+    <button style={vs[v]} onClick={onClick} onMouseOver={(e) => (e.currentTarget.style.opacity = "0.82")} onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}>
       {children}
     </button>
   );
 }
 
 function Input({ label, value, onChange, type = "text", placeholder, multi = false }) {
-  const s = {
-    width: "100%", border: `1px solid ${C.creamMid}`, padding: "0.75rem",
-    fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: C.text,
-    background: C.cream, boxSizing: "border-box", display: "block",
-    minHeight: "44px",
-  };
+  const s = { width: "100%", border: `1px solid ${C.creamMid}`, padding: "0.75rem", fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: C.text, background: C.cream, boxSizing: "border-box", display: "block", minHeight: "44px" };
   return (
     <div style={{ marginBottom: "1rem" }}>
       <label style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.68rem", letterSpacing: "0.12em", textTransform: "uppercase", color: C.textLight, display: "block", marginBottom: "0.35rem" }}>{label}</label>
-      {multi
-        ? <textarea style={{ ...s, minHeight: "100px" }} value={value} onChange={onChange} placeholder={placeholder} />
-        : <input style={s} type={type} value={value} onChange={onChange} placeholder={placeholder} />}
+      {multi ? <textarea style={{ ...s, minHeight: "100px" }} value={value} onChange={onChange} placeholder={placeholder} /> : <input style={s} type={type} value={value} onChange={onChange} placeholder={placeholder} />}
     </div>
   );
 }
 
 function Alert({ type, children }) {
-  const colors = {
-    success: { bg: "#2a524018", border: "#3a6b5040", color: C.forestMid },
-    error: { bg: `${C.red}18`, border: `${C.red}30`, color: C.red },
-    info: { bg: `${C.forest}12`, border: `${C.forest}30`, color: C.forest },
-  };
+  const colors = { success: { bg: "#2a524018", border: "#3a6b5040", color: C.forestMid }, info: { bg: `${C.forest}12`, border: `${C.forest}30`, color: C.forest } };
   const c = colors[type] || colors.info;
-  return (
-    <div style={{ background: c.bg, border: `1px solid ${c.border}`, padding: "0.8rem", marginBottom: "1rem", fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: c.color }}>
-      {children}
-    </div>
-  );
+  return <div style={{ background: c.bg, border: `1px solid ${c.border}`, padding: "0.8rem", marginBottom: "1rem", fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: c.color }}>{children}</div>;
 }
 
 // ── Navbar ────────────────────────────────────────────────────────────
-function Navbar({ page, setPage, setModal }) {
+function Navbar({ page, setPage }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const links = ["Home", "About", "Packages", "Gallery", "Treks", "Student", "Feedback"];
+  const links = ["Home", "About", "Offerings", "Gallery", "Treks", "Student", "Feedback"];
 
-  const navTo = (p) => {
-    setPage(p);
-    setMenuOpen(false);
-    window.scrollTo(0, 0);
-  };
+  const navTo = (p) => { setPage(p); setMenuOpen(false); };
 
   return (
     <>
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: C.cream, borderBottom: `2px solid ${C.forest}`, padding: "0 1.5rem 0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "66px" }}>
-        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "9px", cursor: "pointer" }} onClick={() => navTo("home")}>
           <Logo size={48} />
           <div>
@@ -1373,68 +1472,30 @@ function Navbar({ page, setPage, setModal }) {
             <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.55rem", letterSpacing: "0.2em", color: C.forestLight, textTransform: "uppercase" }}>RESORT · ARU VALLEY</div>
           </div>
         </div>
-
-        {/* Desktop Nav */}
         <div className="nav-desktop">
           {links.map((l) => (
-            <span key={l}
-              style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.74rem", letterSpacing: "0.07em", textTransform: "uppercase", color: page === l.toLowerCase() ? C.forest : C.textMid, cursor: "pointer", fontWeight: page === l.toLowerCase() ? 700 : 400, borderBottom: page === l.toLowerCase() ? `2px solid ${C.forest}` : "2px solid transparent", paddingBottom: "2px" }}
-              onClick={() => navTo(l.toLowerCase())}>
-              {l}
-            </span>
+            <span key={l} style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.74rem", letterSpacing: "0.07em", textTransform: "uppercase", color: page === l.toLowerCase() ? C.forest : C.textMid, cursor: "pointer", fontWeight: page === l.toLowerCase() ? 700 : 400, borderBottom: page === l.toLowerCase() ? `2px solid ${C.forest}` : "2px solid transparent", paddingBottom: "2px" }} onClick={() => navTo(l.toLowerCase())}>{l}</span>
           ))}
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginLeft: "0.5rem" }}>
-            <a
-              href="https://maps.app.goo.gl/ybndetDAMhMxX2o98"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: "1.2rem", color: C.forest, textDecoration: "none" }}
-              title="View on Google Maps"
-            >
-              <i className="fa-solid fa-location-dot"></i>
-            </a>
-            <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.3rem", color: C.forest, textDecoration: "none" }} title="WhatsApp">
-              <i className="fa-brands fa-whatsapp"></i>
-            </a>
-            <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.2rem", color: C.forest, textDecoration: "none" }} title="Instagram">
-              <i className="fa-brands fa-instagram"></i>
-            </a>
+            <a href="https://maps.app.goo.gl/ybndetDAMhMxX2o98" target="_blank" rel="noreferrer" style={{ fontSize: "1.2rem", color: C.forest, textDecoration: "none" }} title="View on Google Maps"><i className="fa-solid fa-location-dot"></i></a>
+            <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.3rem", color: C.forest, textDecoration: "none" }} title="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
+            <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.2rem", color: C.forest, textDecoration: "none" }} title="Instagram"><i className="fa-brands fa-instagram"></i></a>
             <Btn sm onClick={() => navTo("contact")}>Contact Us</Btn>
           </div>
         </div>
-
-        {/* Hamburger */}
         <button className="hamburger-btn" onClick={() => setMenuOpen((o) => !o)} aria-label="Toggle menu">
-          {menuOpen
-            ? <i className="fa-solid fa-xmark"></i>
-            : <i className="fa-solid fa-bars"></i>}
+          {menuOpen ? <i className="fa-solid fa-xmark"></i> : <i className="fa-solid fa-bars"></i>}
         </button>
       </nav>
-
-      {/* Mobile dropdown */}
       <div className={`mobile-nav-overlay${menuOpen ? " open" : ""}`}>
         {links.map((l) => (
-          <div key={l} className={`mobile-nav-link${page === l.toLowerCase() ? " active" : ""}`} onClick={() => navTo(l.toLowerCase())}>
-            {l}
-          </div>
+          <div key={l} className={`mobile-nav-link${page === l.toLowerCase() ? " active" : ""}`} onClick={() => navTo(l.toLowerCase())}>{l}</div>
         ))}
         <div className="mobile-nav-link" onClick={() => navTo("contact")}>Contact</div>
         <div className="mobile-nav-actions">
-          <a
-            href="https://maps.app.goo.gl/ybndetDAMhMxX2o98"
-            target="_blank"
-            rel="noreferrer"
-            style={{ fontSize: "1.5rem", color: C.forest, textDecoration: "none" }}
-            title="View on Google Maps"
-          >
-            <i className="fa-solid fa-location-dot"></i>
-          </a>
-          <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.5rem", color: C.forest, textDecoration: "none" }}>
-            <i className="fa-brands fa-whatsapp"></i>
-          </a>
-          <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.4rem", color: C.forest, textDecoration: "none" }}>
-            <i className="fa-brands fa-instagram"></i>
-          </a>
+          <a href="https://maps.app.goo.gl/ybndetDAMhMxX2o98" target="_blank" rel="noreferrer" style={{ fontSize: "1.5rem", color: C.forest, textDecoration: "none" }} title="View on Google Maps"><i className="fa-solid fa-location-dot"></i></a>
+          <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.5rem", color: C.forest, textDecoration: "none" }}><i className="fa-brands fa-whatsapp"></i></a>
+          <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.4rem", color: C.forest, textDecoration: "none" }}><i className="fa-brands fa-instagram"></i></a>
         </div>
       </div>
     </>
@@ -1444,22 +1505,29 @@ function Navbar({ page, setPage, setModal }) {
 // ── Hero Section ──────────────────────────────────────────────────────
 function Hero({ setPage }) {
   return (
-    <section style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "flex-end", overflow: "hidden", paddingBottom: "4rem" }}>
-      <img
-        src="/images/hero.jpeg"
-        alt="Aru Valley Tents"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "bottom" }}
-      />
+    <section style={{ 
+      position: "relative", 
+      minHeight: "100vh", 
+      display: "flex", 
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      overflow: "hidden", 
+      paddingBottom: "4rem",
+      paddingTop: "100px" 
+    }}>
+      <img src="/images/hero.jpeg" alt="Aru Valley Tents" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "bottom" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(22,48,36,0.85) 0%,rgba(22,48,36,0.4) 60%,rgba(22,48,36,0.85) 100%)" }} />
       <div className="hero-text-pad" style={{ position: "relative", maxWidth: "680px", padding: "0 3rem 0 5vw", zIndex: 2 }}>
-        <Logo size={52} color={C.cream} />
-        <div className="hero-main-title" style={{ marginTop: "1rem", fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(2.8rem,7vw,5.5rem)", color: C.cream, lineHeight: 1.0, fontWeight: 700 }}>ARU CAMPING</div>
+        
+        {/* Logo has been completely removed from here */}
+        
+        <div className="hero-main-title" style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(2.8rem,7vw,5.5rem)", color: C.cream, lineHeight: 1.0, fontWeight: 700 }}>ARU CAMPING</div>
         <div className="hero-sub-title" style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(1.8rem,4.5vw,3.5rem)", color: C.goldLight, lineHeight: 1.0, fontStyle: "italic", marginBottom: "1.5rem" }}>Experiences</div>
         <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.95rem", color: "rgba(249,248,245,0.78)", lineHeight: 1.85, maxWidth: "460px", marginBottom: "2.5rem", fontWeight: 300 }}>
           Premium camping, guided treks & unforgettable group adventures in Kashmir's most pristine valley.
         </p>
         <div className="hero-btns">
-          <Btn onClick={() => setPage("packages")}>Explore Packages</Btn>
+          <Btn onClick={() => setPage("offerings")}>Explore Offerings</Btn>
           <Btn v="ghost" onClick={() => setPage("contact")}>Book Now</Btn>
         </div>
         <div className="hero-stats">
@@ -1516,7 +1584,7 @@ function About() {
               Nestled in <strong style={{ color: C.forest, fontWeight: 700 }}>Aru Valley, Pahalgam</strong>, our private-land resort is framed by pine forests, alpine rivers, and snow-capped peaks — the perfect base camp for Kashmir's most iconic treks.
             </p>
             <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.9, fontWeight: 300, marginBottom: "2rem" }}>
-              We specialise in <strong style={{ color: C.forest, fontWeight: 700 }}>school, college & university group camps</strong>, guided treks to Liddarwat, Kolahai Glacier and Alpine Lakes, plus pony rides, horse riding, and bonfire evenings.
+              We specialise in <strong style={{ color: C.forest, fontWeight: 700 }}>school, college & university group camps</strong>, guided treks to Liddarwat, and Alpine Lakes, plus pony rides, horse riding, and bonfire evenings.
             </p>
             <div className="about-bullets">
               {[["SAFE", "24/7 CCTV & staff"], ["STRUCTURED", "Planned itineraries"], ["SUPERVISED", "Expert guides always"], ["NOURISHING", "In-house kitchen"]].map(([t, d]) => (
@@ -1537,18 +1605,18 @@ function About() {
   );
 }
 
-// ── Packages ──────────────────────────────────────────────────────────
-function Packages({ setModal }) {
+// ── Offerings ─────────────────────────────────────────────────────────
+function OfferingsPage({ setPage, setModal }) {
   return (
     <section className="section-padded" style={{ background: C.cream, padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
           <SectionLabel center>What We Offer</SectionLabel>
           <Divider center />
-          <SectionTitle center>Our Packages</SectionTitle>
+          <SectionTitle center>Our Offerings</SectionTitle>
         </div>
         <div className="packages-grid">
-          {PACKAGES.map((p) => (
+          {OFFERINGS.map((p) => (
             <div key={p.id} className="lift" style={{ background: p.pop ? C.forest : C.white, border: `2px solid ${p.pop ? C.forest : C.creamMid}`, padding: "2rem", position: "relative" }}>
               {p.pop && <div style={{ position: "absolute", top: "-1px", left: "1.5rem", background: C.gold, color: C.white, padding: "0.18rem 0.75rem", fontFamily: "'Lato', sans-serif", fontSize: "0.62rem", letterSpacing: "0.15em", fontWeight: 700, textTransform: "uppercase" }}>Most Popular</div>}
               <div style={{ fontSize: "2rem", marginBottom: "0.8rem" }}>{p.icon}</div>
@@ -1561,7 +1629,15 @@ function Packages({ setModal }) {
                   </li>
                 ))}
               </ul>
-              <Btn full v={p.pop ? "gold" : "outline"} onClick={() => setModal("contact")}>Book This Package</Btn>
+              <Btn full v={p.pop ? "gold" : "outline"} onClick={() => {
+                if (p.name === "School Special") {
+                  setPage("student");
+                } else {
+                  setModal("contact");
+                }
+              }}>
+                {p.name === "School Special" ? "View Details" : "Book This Offering"}
+              </Btn>
             </div>
           ))}
         </div>
@@ -1574,22 +1650,18 @@ function Packages({ setModal }) {
 function StudentPage({ setPage }) {
   return (
     <div style={{ background: C.cream, paddingBottom: "0" }}>
-      
-      {/* --- Section 1: Itineraries --- */}
       <section className="section-padded" style={{ padding: "6rem 2rem 4rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <SectionLabel center>Flexible Programs</SectionLabel>
             <SectionTitle center>School Camp Itineraries</SectionTitle>
           </div>
-          
           <div className="packages-grid">
             {SCHOOL_ITINERARIES.map((p) => (
               <div key={p.id} className="lift" style={{ background: p.pop ? C.forest : C.white, border: `1px solid ${p.pop ? C.forest : C.creamMid}`, padding: "2rem", display: "flex", flexDirection: "column" }}>
                 <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>{p.icon}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.25rem", color: p.pop ? C.cream : C.forest, marginBottom: "0.4rem", lineHeight: 1.2 }}>{p.name}</div>
                 <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", color: p.pop ? "rgba(245,240,232,0.6)" : C.textLight, marginBottom: "1.5rem" }}>{p.dur}</div>
-                
                 <ul style={{ listStyle: "none", padding: 0, marginBottom: "2rem", flexGrow: 1 }}>
                   {p.feats.map((f) => (
                     <li key={f} style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: p.pop ? "rgba(245,240,232,0.85)" : C.textMid, padding: "0.45rem 0" }}>
@@ -1597,14 +1669,17 @@ function StudentPage({ setPage }) {
                     </li>
                   ))}
                 </ul>
-                <Btn full v={p.pop ? "gold" : "primary"} onClick={() => { setPage("contact"); window.scrollTo(0, 0); }}>View Plan</Btn>
+                <Btn full v={p.pop ? "gold" : "primary"} onClick={() => { 
+                  if (p.id === 4) { setPage("contact"); } else { setPage(`plan-${p.id}`); }
+                }}>
+                  {p.id === 4 ? "Contact Us" : "View Plan"}
+                </Btn>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- Section 2: What Students Take Back --- */}
       <section className="section-padded" style={{ padding: "2rem 2rem 4rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -1614,7 +1689,6 @@ function StudentPage({ setPage }) {
               Experiences that shape students beyond academics.
             </p>
           </div>
-          
           <div className="takebacks-grid">
             {TAKE_BACKS.map((t) => (
               <div key={t.title} className="lift" style={{ background: C.white, border: `1px solid ${C.creamMid}`, padding: "2.5rem 1.5rem", textAlign: "center" }}>
@@ -1627,19 +1701,15 @@ function StudentPage({ setPage }) {
         </div>
       </section>
 
-      {/* --- Section 3: Meal Plan (NEW) --- */}
       <section className="section-padded" style={{ background: C.creamDark, padding: "5rem 2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div className="student-grid" style={{ alignItems: "start" }}>
-            
-            {/* Left: Menu Timeline */}
             <div>
               <SectionLabel>Camp Nutrition</SectionLabel>
               <SectionTitle>Sample Daily Menu</SectionTitle>
               <p style={{ fontFamily: "'Lato', sans-serif", color: C.textMid, fontSize: "0.95rem", marginBottom: "2.5rem" }}>
                 Nutritious, wholesome, and tasty meals to keep students energized through every adventure.
               </p>
-              
               <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                 {MENU_TIMELINE.map((m, i) => (
                   <div key={i} style={{ display: "flex", gap: "1.2rem", background: C.white, padding: "1.2rem", border: `1px solid ${C.creamMid}` }}>
@@ -1652,8 +1722,6 @@ function StudentPage({ setPage }) {
                 ))}
               </div>
             </div>
-
-            {/* Right: Values Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignContent: "center", height: "100%" }}>
               {MEAL_VALUES.map((v, i) => (
                 <div key={i} style={{ background: C.forest, padding: "1.8rem", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -1663,12 +1731,10 @@ function StudentPage({ setPage }) {
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* --- Section 4: Safety Banner --- */}
       <section style={{ padding: "0" }}>
         <div style={{ background: C.forest, padding: "4rem 2rem", textAlign: "center" }}>
           <div style={{ maxWidth: "800px", margin: "0 auto" }}>
@@ -1684,8 +1750,88 @@ function StudentPage({ setPage }) {
           </div>
         </div>
       </section>
-
     </div>
+  );
+}
+
+// ── Detailed Itinerary Component ──────────────────────────────────────
+function ItineraryDetail({ id, setPage }) {
+  const plan = DETAILED_PLANS[id];
+  if (!plan) return null;
+
+  return (
+    <section style={{ background: C.creamDark, paddingBottom: "4rem" }}>
+      {/* Header */}
+      <div style={{ background: C.forest, padding: "4rem 2rem", textAlign: "center", color: C.cream }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+          <div style={{ marginBottom: "1.5rem" }}>
+             <Btn sm v="outline" onClick={() => setPage("student")} style={{ borderColor: "rgba(255,255,255,0.3)", color: C.cream }}>
+               <i className="fa-solid fa-arrow-left" style={{ marginRight: "8px" }}></i> Back to Plans
+             </Btn>
+          </div>
+          <SectionLabel center light>Detailed Itinerary</SectionLabel>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", marginTop: "0.5rem", marginBottom: "1rem" }}>{plan.title}</h1>
+          <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "1rem", color: C.goldLight, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>{plan.duration}</p>
+          <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.95rem", color: "rgba(245,240,232,0.7)", marginTop: "1rem", fontStyle: "italic" }}>{plan.subtitle}</p>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: "900px", margin: "-2rem auto 0", position: "relative", zIndex: 10, padding: "0 1.5rem" }}>
+        
+        {/* Timeline Days */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginBottom: "3rem" }}>
+          {plan.days.map((d, index) => (
+            <div key={index} className="day-card lift">
+              <div className="day-number">
+                <span>Day</span>
+                <strong>0{d.day}</strong>
+              </div>
+              <div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.3rem", color: C.forest }}>{d.title}</h3>
+                <ul className="itinerary-list">
+                  {d.activities.map((act, i) => (
+                    <li key={i}>
+                      <i className="fa-solid fa-circle-check"></i>
+                      <span>{act}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Inclusions & Carry Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem", marginBottom: "3rem" }}>
+          <div style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}` }}>
+            <SectionLabel>What's Included</SectionLabel>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.2rem", color: C.forest, marginBottom: "1rem", marginTop: "0.5rem" }}>Camp Inclusions</h3>
+            <ul className="itinerary-list">
+              {plan.inclusions.map((inc, i) => (
+                <li key={i}><i className="fa-solid fa-plus" style={{ color: C.forestLight }}></i> {inc}</li>
+              ))}
+            </ul>
+          </div>
+          
+          <div style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}` }}>
+            <SectionLabel>Preparation</SectionLabel>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.2rem", color: C.forest, marginBottom: "1rem", marginTop: "0.5rem" }}>Things To Carry</h3>
+            <ul className="itinerary-list">
+              {plan.carry.map((item, i) => (
+                <li key={i}><i className="fa-solid fa-suitcase-rolling" style={{ color: C.textMid }}></i> {item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ textAlign: "center", padding: "3rem", background: C.forest, border: `1px solid ${C.forestMid}` }}>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.8rem", color: C.cream, marginBottom: "1.5rem" }}>Ready to plan this trip?</h3>
+          <Btn v="gold" onClick={() => setPage("contact")}>Enquire About This Package</Btn>
+        </div>
+
+      </div>
+    </section>
   );
 }
 
@@ -1734,7 +1880,7 @@ function Treks() {
             <Divider />
             <SectionTitle>Trek Routes</SectionTitle>
             <p style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.9rem", color: C.textLight, lineHeight: 1.85, marginBottom: "2rem", fontWeight: 300 }}>
-              From gentle valley walks to the mighty Kolahai Glacier — certified local guides lead every trail.
+              From gentle valley walks to alpine lakes — certified local guides lead every trail.
             </p>
             {TREKS.map((t) => (
               <div key={t.name} className="lift" style={{ background: C.white, border: `1px solid ${C.creamMid}`, padding: "1.1rem 1.4rem", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem", gap: "0.5rem" }}>
@@ -1844,18 +1990,10 @@ function Contact() {
           <div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.5rem" }}>Find Us</h3>
             {[
-              [<i className="fa-solid fa-location-dot" style={{ color: "#EA4335" }}></i>, "Location", (
-                <a href="https://maps.app.goo.gl/ybndetDAMhMxX2o98" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                  Aru Valley, Pahalgam{"\n"}Anantnag, J&K — 192126
-                </a>
-              )],
+              [<i className="fa-solid fa-location-dot" style={{ color: "#EA4335" }}></i>, "Location", (<a href="https://maps.app.goo.gl/ybndetDAMhMxX2o98" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>Aru Valley, Pahalgam{"\n"}Anantnag, J&K — 192126</a>)],
               [<i className="fa-solid fa-phone" style={{ color: C.forest }}></i>, "Phone", "+91 8375069287\n+91 9419000066"],
               [<i className="fa-solid fa-envelope" style={{ color: "#4285F4" }}></i>, "Email", <EmailLink email="info@arucampingresort.com" />],
-              [<i className="fa-brands fa-instagram" style={{ color: "#E4405F" }}></i>, "Instagram", (
-                <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                  @aru_camping_resort
-                </a>
-              )],
+              [<i className="fa-brands fa-instagram" style={{ color: "#E4405F" }}></i>, "Instagram", (<a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>@aru_camping_resort</a>)],
               [<i className="fa-solid fa-clock" style={{ color: C.textLight }}></i>, "Hours", "Open Year Round\n8:00 AM – 9:00 PM IST"],
             ].map(([icon, title, info]) => (
               <div key={title} style={{ display: "flex", gap: "1rem", padding: "1.1rem 0", borderBottom: `1px solid ${C.creamMid}` }}>
@@ -1891,26 +2029,18 @@ function Footer({ setPage }) {
               Premium camping & trekking experiences designed for groups, schools, colleges, and adventure seekers.
             </p>
             <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
-              <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.2rem", color: C.goldLight, textDecoration: "none" }} title="WhatsApp">
-                <i className="fa-brands fa-whatsapp"></i>
-              </a>
-              <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.15rem", color: C.goldLight, textDecoration: "none" }} title="Instagram">
-                <i className="fa-brands fa-instagram"></i>
-              </a>
+              <a href="https://wa.me/918375069287" target="_blank" rel="noreferrer" style={{ fontSize: "1.2rem", color: C.goldLight, textDecoration: "none" }} title="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
+              <a href="https://instagram.com/aru_camping_resort" target="_blank" rel="noreferrer" style={{ fontSize: "1.15rem", color: C.goldLight, textDecoration: "none" }} title="Instagram"><i className="fa-brands fa-instagram"></i></a>
             </div>
           </div>
           <div>
             <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: C.goldLight, marginBottom: "1.2rem" }}>Quick Links</div>
-            {["Home", "About", "Packages", "Gallery", "Treks", "Student", "Feedback"].map((l) => (
-              <div key={l}
-                style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: "rgba(245,240,232,0.6)", cursor: "pointer", marginBottom: "0.5rem", padding: "0.2rem 0" }}
-                onMouseOver={(e) => (e.currentTarget.style.color = C.cream)}
-                onMouseOut={(e) => (e.currentTarget.style.color = "rgba(245,240,232,0.6)")}
-                onClick={() => { setPage(l.toLowerCase()); window.scrollTo(0, 0); }}>
-                {l}
-              </div>
+            {["Home", "About", "Offerings", "Gallery", "Treks", "Student", "Feedback"].map((l) => (
+              <div key={l} style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: "rgba(245,240,232,0.6)", cursor: "pointer", marginBottom: "0.5rem", padding: "0.2rem 0" }}
+                onMouseOver={(e) => (e.currentTarget.style.color = C.cream)} onMouseOut={(e) => (e.currentTarget.style.color = "rgba(245,240,232,0.6)")}
+                onClick={() => { setPage(l.toLowerCase()); }}>{l}</div>
             ))}
-            <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: "rgba(245,240,232,0.6)", cursor: "pointer", marginBottom: "0.5rem" }} onClick={() => { setPage("contact"); window.scrollTo(0, 0); }}>Contact</div>
+            <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: "rgba(245,240,232,0.6)", cursor: "pointer", marginBottom: "0.5rem" }} onClick={() => { setPage("contact"); }}>Contact</div>
           </div>
           <div>
             <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: C.goldLight, marginBottom: "1.2rem" }}>Contact</div>
@@ -1920,7 +2050,7 @@ function Footer({ setPage }) {
           </div>
         </div>
         <div style={{ textAlign: "center", fontFamily: "'Lato', sans-serif", fontSize: "0.68rem", color: "rgba(245,240,232,0.28)", paddingTop: "1.5rem", borderTop: "1px solid rgba(245,240,232,0.08)" }}>
-          © 2025 Aru Camping Resort · All Rights Reserved · Aru Valley, Pahalgam, Jammu & Kashmir
+          © 2026 Aru Camping Resort · All Rights Reserved · Aru Valley, Pahalgam, Jammu & Kashmir
         </div>
       </div>
     </footer>
@@ -1932,27 +2062,53 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [modal, setModal] = useState(null);
 
-  useEffect(() => { injectCSS(); }, []);
+  useEffect(() => { 
+    injectCSS(); 
+    
+    // Set initial history state to fix browser Back button behavior
+    window.history.replaceState({ page: "home" }, "", "");
 
-  const nav = (p) => { setPage(p); window.scrollTo(0, 0); };
+    const handlePopState = (e) => {
+      if (e.state && e.state.page) {
+        setPage(e.state.page);
+      } else {
+        setPage("home");
+      }
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const nav = (p) => { 
+    window.history.pushState({ page: p }, "", "");
+    setPage(p); 
+    window.scrollTo(0, 0); 
+  };
 
   const renderPage = () => {
     switch (page) {
-      case "home": return <><Hero setPage={nav} /><Strip /><About /><Packages setModal={setModal} /><Gallery /><Treks /></>;
+      case "home": return <><Hero setPage={nav} /><Strip /><About /><OfferingsPage setPage={nav} setModal={setModal} /><Gallery /><Treks /></>;
       case "about": return <About />;
-      case "packages": return <Packages setModal={setModal} />;
+      case "offerings": return <OfferingsPage setPage={nav} setModal={setModal} />;
       case "gallery": return <Gallery />;
       case "treks": return <Treks />;
       case "student": return <StudentPage setPage={nav} />;
       case "feedback": return <FeedbackPage />;
       case "contact": return <Contact />;
+      
+      // Dynamic Itinerary Pages
+      case "plan-1": return <ItineraryDetail id={1} setPage={nav} />;
+      case "plan-2": return <ItineraryDetail id={2} setPage={nav} />;
+      case "plan-3": return <ItineraryDetail id={3} setPage={nav} />;
+      
       default: return <Hero setPage={nav} />;
     }
   };
 
   return (
     <div style={{ background: C.cream, minHeight: "100vh" }}>
-      <Navbar page={page} setPage={nav} setModal={setModal} />
+      <Navbar page={page} setPage={nav} />
       <div style={{ paddingTop: page === "home" ? 0 : "66px" }}>
         {renderPage()}
       </div>
