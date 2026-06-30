@@ -1,0 +1,180 @@
+import { useState, useEffect } from "react";
+
+// ── Brand Colors ──────────────────────────────────────────────────────
+const C = {
+  cream: "#f5f0e8",
+  creamDark: "#ede6d6",
+  creamMid: "#ddd5c0",
+  forest: "#1e3d2f",
+  forestMid: "#2a5240",
+  forestLight: "#3a6b50",
+  gold: "#b8963e",
+  goldLight: "#d4aa55",
+  text: "#1a2e22",
+  textMid: "#3d5a46",
+  textLight: "#6b8a72",
+  white: "#ffffff",
+  red: "#8b3a2a",
+};
+
+// ── Global CSS Injection ──────────────────────────────────────────────
+function injectCSS() {
+  if (document.getElementById("aru-css")) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap";
+  document.head.appendChild(link);
+
+  const fa = document.createElement("link");
+  fa.rel = "stylesheet";
+  fa.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+  document.head.appendChild(fa);
+
+  const style = document.createElement("style");
+  style.id = "aru-css";
+  style.textContent = `
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: ${C.cream}; overflow-x: hidden; }
+    .lift { transition: transform .22s, box-shadow .22s; }
+    .lift:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(30,61,47,.13); }
+    @media (max-width: 900px) { .section-padded { padding: 3rem 1.25rem !important; } }
+  `;
+  document.head.appendChild(style);
+}
+
+// ── Shared UI Components ──────────────────────────────────────────────
+const SectionLabel = ({ children, center }) => (
+  <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.68rem", letterSpacing: "0.22em", textTransform: "uppercase", color: C.forestLight, fontWeight: 700, textAlign: center ? "center" : "left", marginBottom: "0.5rem" }}>{children}</div>
+);
+
+const SectionTitle = ({ children, center }) => (
+  <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(1.8rem,4vw,2.8rem)", color: C.forest, lineHeight: 1.2, textAlign: center ? "center" : "left" }}>{children}</h2>
+);
+
+const Btn = ({ children, onClick, v = "primary", full }) => {
+  const base = { fontFamily: "'Lato', sans-serif", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", border: "2px solid", padding: "0.8rem 1.9rem", width: full ? "100%" : "auto", fontSize: "0.78rem" };
+  const styles = {
+    primary: { ...base, background: C.forest, borderColor: C.forest, color: C.cream },
+    outline: { ...base, background: "transparent", borderColor: C.forest, color: C.forest },
+    gold: { ...base, background: C.gold, borderColor: C.gold, color: C.white }
+  };
+  return <button style={styles[v]} onClick={onClick}>{children}</button>;
+};
+
+// ── Data: School Itineraries ──────────────────────────────────────────
+const SCHOOL_PACKAGES = [
+  {
+    id: "1n2d",
+    name: "Summer School Camp (1N/2D)",
+    highlights: ["Arrival & Orientation", "Ice-breaker Activities", "Guided Trek to nearby trail", "Group Photo & Feedback"],
+    meals: "Veg / Non-Veg options (Breakfast, Lunch, Afternoon Tea, Dinner)",
+  },
+  {
+    id: "2n3d",
+    name: "Adventure & Exploration (2N/3D)",
+    highlights: ["Scenic drive to camp", "Nature Trail Exploration", "Afternoon Sports & Fun", "Campfire, Games & Sharing"],
+    meals: "Balanced Nutrition: Includes Cheese Curry, Lentils, and High-energy snacks",
+  },
+  {
+    id: "3n4d",
+    name: "The Lidderwatt Expedition (3N/4D)",
+    highlights: ["Trek to Lidderwatt Valley", "Village Life Experience", "Kolahai Stream Crossing", "Farewell Campfire & Celebrations"],
+    meals: "Full Board: Custom menus for students and complimentary teacher stays",
+  }
+];
+
+const OUTCOMES = [
+  { title: "Leadership", desc: "Inspiring others and leading with purpose.", icon: "🧭" },
+  { title: "Confidence", desc: "Building self-belief and embracing new challenges.", icon: "✨" },
+  { title: "Independence", desc: "Managing tasks and making responsible choices.", icon: "🚶" },
+  { title: "Connection", desc: "Developing appreciation for the environment.", icon: "🌿" }
+];
+
+// ── Main Component ───────────────────────────────────────────────────
+export default function App() {
+  const [page, setPage] = useState("home");
+  useEffect(() => { injectCSS(); }, []);
+
+  return (
+    <div style={{ background: C.cream, minHeight: "100vh", fontFamily: "'Lato', sans-serif" }}>
+      {/* Navbar Placeholder */}
+      <nav style={{ height: "66px", background: C.cream, borderBottom: `2px solid ${C.forest}`, display: "flex", alignItems: "center", justifyContent: "center", position: "fixed", width: "100%", zIndex: 10 }}>
+        <h1 onClick={() => setPage("home")} style={{ cursor: "pointer", fontFamily: "'Libre Baskerville', serif", fontSize: "1.2rem", color: C.forest }}>ARU CAMPING</h1>
+      </nav>
+
+      <div style={{ paddingTop: "66px" }}>
+        {/* --- STUDENT SECTION: ENRICHED FROM BROCHURES --- */}
+        <section className="section-padded" style={{ padding: "6rem 2rem", maxWidth: "1200px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "4rem" }}>
+            <SectionLabel center>Beyond the Classroom</SectionLabel>
+            <SectionTitle center>Meaningful Student Travel</SectionTitle>
+            <p style={{ color: C.textMid, maxWidth: "700px", margin: "1.5rem auto", lineHeight: 1.8 }}>
+              Built with a vision to make student travel transformative. Nestled in the serene Aru Valley, 
+              we provide a secure, supervised environment where students explore and build true potential[cite: 14, 24].
+            </p>
+          </div>
+
+          {/* Core Outcomes Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.5rem", marginBottom: "5rem" }}>
+            {OUTCOMES.map(o => (
+              <div key={o.title} className="lift" style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, textAlign: "center" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>{o.icon}</div>
+                <h4 style={{ fontFamily: "'Libre Baskerville', serif", marginBottom: "0.5rem" }}>{o.title}</h4>
+                <p style={{ fontSize: "0.85rem", color: C.textLight }}>{o.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* School Package Grid */}
+          <div style={{ marginBottom: "5rem" }}>
+            <SectionLabel center>Itineraries</SectionLabel>
+            <SectionTitle center>School Camp Programs</SectionTitle>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", marginTop: "3rem" }}>
+              {SCHOOL_PACKAGES.map(pkg => (
+                <div key={pkg.id} style={{ background: C.white, border: `1px solid ${C.forest}`, padding: "2.5rem", position: "relative" }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.3rem", color: C.forest, marginBottom: "1.5rem" }}>{pkg.name}</h3>
+                  <ul style={{ listStyle: "none", padding: 0 }}>
+                    {pkg.highlights.map(h => (
+                      <li key={h} style={{ marginBottom: "0.8rem", fontSize: "0.9rem", color: C.textMid, display: "flex", gap: "8px" }}>
+                        <span style={{ color: C.gold }}>✓</span> {h}
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: "2rem", borderTop: `1px solid ${C.creamMid}`, paddingTop: "1rem" }}>
+                    <p style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: C.forestLight }}>Meal Plan:</p>
+                    <p style={{ fontSize: "0.85rem", fontStyle: "italic", color: C.textLight }}>{pkg.meals} [cite: 90, 333, 597]</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Safety Protocols */}
+          <div style={{ background: C.forest, color: C.cream, padding: "4rem", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
+            <div>
+              <SectionLabel center={false} light={true}>Priority Always</SectionLabel>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "2rem", marginTop: "0.5rem" }}>Safety & Comfort</h3>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {[
+                "24/7 Staff Supervision & Monitoring [cite: 30]",
+                "Restricted Entry & Exit Points [cite: 264]",
+                "Trained Staff & First-Aid Support [cite: 77]",
+                "Safe Drinking Water & Hygienic Prep [cite: 36]"
+              ].map(s => (
+                <div key={s} style={{ display: "flex", gap: "10px", fontSize: "0.9rem" }}>
+                  <span>🛡️</span> {s}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* Contact Footer Placeholder */}
+      <footer style={{ background: C.creamDark, padding: "4rem 2rem", textAlign: "center" }}>
+        <Btn onClick={() => alert("Enquiry Sent!")}>Plan Your School Trip With Us [cite: 234]</Btn>
+      </footer>
+    </div>
+  );
+}

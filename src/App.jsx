@@ -1186,12 +1186,15 @@ const TREKS = [
 ];
 
 const GALLERY = [
-  { url: "/images/s2.jpeg", cap: "Aru Valley Panorama" },
-  { url: "/images/t2.jpeg", cap: "Camp Setup" },
-  { url: "/images/royalsuits.jpeg", cap: "The Alp Tents" },
-  { url: "/images/ph.jpeg", cap: "Alpine Meadows" },
-  { url: "/images/hourse.jpeg", cap: "Horse Riding" },
-  { url: "/images/hero.jpeg", cap: "The Swiss Tents" },
+  { type: "video", url: "/videoes/IMG_4377.MOV", cap: "Aru Camp Tour" },
+  { type: "image", url: "/images/s2.jpeg", cap: "Aru Valley Panorama" },
+  { type: "image", url: "/images/t2.jpeg", cap: "Camp Setup" },
+  { type: "image", url: "/images/royalsuits.jpeg", cap: "The Alp Tents" },
+  { type: "image", url: "/images/ph.jpeg", cap: "Alpine Meadows" },
+  { type: "image", url: "/images/hourse.jpeg", cap: "Horse Riding" },
+  { type: "image", url: "/images/hero.jpeg", cap: "The Swiss Tents" },
+  
+  { type: "image", url: "/images/IMG_4424.JPG", cap: "meals" },
 ];
 
 const TESTIMONIALS = [
@@ -1835,9 +1838,44 @@ function ItineraryDetail({ id, setPage }) {
   );
 }
 
+// // ── Gallery ───────────────────────────────────────────────────────────
+// function Gallery() {
+//   const [sel, setSel] = useState(null);
+//   return (
+//     <section className="section-padded" style={{ background: C.creamDark, padding: "6rem 2rem" }}>
+//       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+//         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+//           <SectionLabel center>Visual Journey</SectionLabel>
+//           <Divider center />
+//           <SectionTitle center>Life at Aru Camp</SectionTitle>
+//         </div>
+//         <div className="gallery-grid">
+//           {GALLERY.map((img, i) => (
+//             <div key={i} style={{ position: "relative", overflow: "hidden", cursor: "pointer", aspectRatio: i === 0 || i === 3 ? "1/1.3" : "1/1" }} onClick={() => setSel(img)}>
+//               <img src={img.url} alt={img.cap} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
+//                 onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.07)")}
+//                 onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")} />
+//               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.7rem", background: "linear-gradient(to top,rgba(30,61,47,.8),transparent)", fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", color: C.cream }}>{img.cap}</div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//       {sel && (
+//         <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,14,.93)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }} onClick={() => setSel(null)}>
+//           <div style={{ maxWidth: "800px", width: "100%" }}>
+//             <img src={sel.url} alt={sel.cap} style={{ width: "100%", display: "block" }} />
+//             <div style={{ background: C.forest, padding: "1rem", textAlign: "center", fontFamily: "'Libre Baskerville', serif", color: C.cream }}>{sel.cap}</div>
+//           </div>
+//         </div>
+//       )}
+//     </section>
+//   );
+// }
+
 // ── Gallery ───────────────────────────────────────────────────────────
 function Gallery() {
   const [sel, setSel] = useState(null);
+  
   return (
     <section className="section-padded" style={{ background: C.creamDark, padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -1847,28 +1885,66 @@ function Gallery() {
           <SectionTitle center>Life at Aru Camp</SectionTitle>
         </div>
         <div className="gallery-grid">
-          {GALLERY.map((img, i) => (
-            <div key={i} style={{ position: "relative", overflow: "hidden", cursor: "pointer", aspectRatio: i === 0 || i === 3 ? "1/1.3" : "1/1" }} onClick={() => setSel(img)}>
-              <img src={img.url} alt={img.cap} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
-                onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.07)")}
-                onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")} />
-              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.7rem", background: "linear-gradient(to top,rgba(30,61,47,.8),transparent)", fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", color: C.cream }}>{img.cap}</div>
+          {GALLERY.map((media, i) => (
+            <div key={i} style={{ position: "relative", overflow: "hidden", cursor: "pointer", aspectRatio: i === 0 || i === 3 ? "1/1.3" : "1/1" }} onClick={() => setSel(media)}>
+              
+              {media.type === "video" ? (
+                <video 
+                  src={media.url} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
+                  muted 
+                  loop 
+                  playsInline
+                  onMouseOver={(e) => { e.currentTarget.style.transform = "scale(1.07)"; e.currentTarget.play(); }}
+                  onMouseOut={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.pause(); }}
+                />
+              ) : (
+                <img 
+                  src={media.url} 
+                  alt={media.cap} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
+                  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.07)")}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")} 
+                />
+              )}
+
+              {/* Play Button Overlay for Videos */}
+              {media.type === "video" && (
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "2.5rem", color: C.cream, opacity: 0.8, pointerEvents: "none" }}>
+                  <i className="fa-solid fa-play"></i>
+                </div>
+              )}
+
+              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.7rem", background: "linear-gradient(to top,rgba(30,61,47,.8),transparent)", fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", color: C.cream }}>{media.cap}</div>
             </div>
           ))}
         </div>
       </div>
+      
+      {/* Fullscreen Modal Viewer */}
       {sel && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,14,.93)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }} onClick={() => setSel(null)}>
-          <div style={{ maxWidth: "800px", width: "100%" }}>
-            <img src={sel.url} alt={sel.cap} style={{ width: "100%", display: "block" }} />
+          {/* Use stopPropagation so clicking the video controls doesn't close the modal */}
+          <div style={{ maxWidth: "800px", width: "100%" }} onClick={(e) => e.stopPropagation()}>
+            
+            {sel.type === "video" ? (
+              <video src={sel.url} controls autoPlay style={{ width: "100%", display: "block" }} />
+            ) : (
+              <img src={sel.url} alt={sel.cap} style={{ width: "100%", display: "block" }} />
+            )}
+
             <div style={{ background: C.forest, padding: "1rem", textAlign: "center", fontFamily: "'Libre Baskerville', serif", color: C.cream }}>{sel.cap}</div>
           </div>
+          
+          {/* Close Button */}
+          <button style={{ position: "absolute", top: "20px", right: "20px", background: "none", border: "none", color: C.cream, fontSize: "2rem", cursor: "pointer" }} onClick={() => setSel(null)}>
+            <i className="fa-solid fa-xmark"></i>
+          </button>
         </div>
       )}
     </section>
   );
 }
-
 // ── Treks ─────────────────────────────────────────────────────────────
 function Treks() {
   return (
