@@ -727,7 +727,7 @@ function Gallery({ gallery }) {
         <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,14,.93)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }} onClick={() => setSel(null)}>
           <div style={{ maxWidth: "800px", width: "100%" }} onClick={(e) => e.stopPropagation()}>
             <img src={sel.url} alt={sel.cap} style={{ width: "100%", display: "block" }} />
-            <div style={{ background: C.forest, padding: "1rem", textAlign: "center", fontFamily: "'Libre Baskerville', serif", color: C.cream }}>{sel.cap}</div>
+            <div style={{ background: C.forest, padding: "1rem", textAlign: "center", fontFamily: "'Libre Baskerville', serif", color: C.cream}>{sel.cap}</div>
           </div>
         </div>
       )}
@@ -819,14 +819,18 @@ function FeedbackPage() {
 
 // ── WhatsApp Booking Engine ───────────────────────────────────────────
 function Contact() {
-  const [form, setForm] = useState({ name: "", dates: "", guests: "2", pkg: "Base Camp Stay", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", dates: "", guests: "2", pkg: "Base Camp Stay", message: "" });
 
   const sendToWhatsApp = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.dates) return alert("Please fill in your Name and Travel Dates!");
+    if (!form.name || !form.dates || (!form.phone && !form.email)) {
+      return alert("Please fill in your Name, Travel Dates, and at least a Phone Number or Email!");
+    }
 
     await supabase.from("inquiries").insert([{
       name: form.name,
+      phone: form.phone || "",
+      email: form.email || "",
       dates: form.dates,
       guests: form.guests,
       pkg: form.pkg,
@@ -836,6 +840,8 @@ function Contact() {
     const phoneNumber = "918375069287"; 
     const text = `*New Camping Booking Request* 🏕️\n\n` +
                  `*Name:* ${form.name}\n` +
+                 `*Phone:* ${form.phone || "Not provided"}\n` +
+                 `*Email:* ${form.email || "Not provided"}\n` +
                  `*Travel Dates:* ${form.dates}\n` +
                  `*Campers:* ${form.guests}\n` +
                  `*Offering:* ${form.pkg}\n` +
@@ -855,6 +861,8 @@ function Contact() {
         </div>
         <form onSubmit={sendToWhatsApp} style={{ background: C.white, padding: "2.5rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
           <Input label="Full Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g., Adnan Shafi" />
+          <Input label="Phone / WhatsApp Number *" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="e.g., +91 9876543210" />
+          <Input label="Email Address *" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="e.g., yourname@gmail.com" />
           <Input label="Travel Dates & Duration *" value={form.dates} onChange={(e) => setForm({ ...form, dates: e.target.value })} placeholder="e.g., Oct 15 - Oct 17" />
           <Input label="Number of Campers" type="number" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })} />
           <Input label="Special Requests" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Vegetarian meals, pony rides, extra tents..." multi />
@@ -867,7 +875,7 @@ function Contact() {
   );
 }
 
-// ── Protected Admin Panel (Add, Edit, Delete Offerings & Photos) ───────
+// ── Protected Admin Panel ─────────────────────────────────────────────
 function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem("aru_admin_auth") === "true");
   const [emailInput, setEmailInput] = useState("");
@@ -877,7 +885,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [activeTab, setActiveTab] = useState("offerings");
   const [inquiries, setInquiries] = useState([]);
 
-  // Form & Editing States
   const [offForm, setOffForm] = useState({ name: "", dur: "", aud: "", icon: "⛺", feats: "", pop: false });
   const [editingOfferingId, setEditingOfferingId] = useState(null);
 
@@ -914,7 +921,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
     if (isAuthenticated) fetchInquiries();
   }, [isAuthenticated]);
 
-  // ── OFFERINGS CRUD ──────────────────────────────────────────
   const handleSaveOffering = async (e) => {
     e.preventDefault();
     if (!offForm.name || !offForm.dur) return alert("Please provide a Title and Duration!");
@@ -924,7 +930,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
       : offForm.feats;
 
     if (editingOfferingId) {
-      // UPDATE
       const { error } = await supabase.from("offerings").update({
         name: offForm.name,
         dur: offForm.dur,
@@ -942,7 +947,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
         fetchOfferings();
       }
     } else {
-      // CREATE
       const { error } = await supabase.from("offerings").insert([{
         name: offForm.name,
         dur: offForm.dur,
@@ -985,13 +989,11 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
     else alert("Error deleting offering: " + error.message);
   };
 
-  // ── GALLERY CRUD ─────────────────────────────────────────────
   const handleSaveGalleryItem = async (e) => {
     e.preventDefault();
     if (!galForm.cap) return alert("Please enter a caption!");
 
     if (editingGalleryId) {
-      // UPDATE CAPTION
       const { error } = await supabase.from("gallery").update({
         cap: galForm.cap
       }).eq("id", editingGalleryId);
@@ -1004,7 +1006,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
         fetchGallery();
       }
     } else {
-      // CREATE / UPLOAD NEW IMAGE
       if (!fileToUpload) return alert("Please select an image file!");
 
       try {
@@ -1091,14 +1092,12 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
           <Btn sm v="danger" onClick={() => { sessionStorage.removeItem("aru_admin_auth"); setIsAuthenticated(false); }}>Lock Session Now</Btn>
         </div>
 
-        {/* Tab Switcher */}
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "2.5rem", flexWrap: "wrap" }}>
           <Btn v={activeTab === "offerings" ? "primary" : "outline"} onClick={() => { setActiveTab("offerings"); cancelEditOffering(); }}>Manage Offerings ({offeringsList.length})</Btn>
           <Btn v={activeTab === "gallery" ? "primary" : "outline"} onClick={() => { setActiveTab("gallery"); cancelEditGallery(); }}>Manage Gallery ({galleryList.length})</Btn>
           <Btn v={activeTab === "inquiries" ? "primary" : "outline"} onClick={() => { setActiveTab("inquiries"); fetchInquiries(); }}>Customer Inquiries / Emails ({inquiriesList.length})</Btn>
         </div>
 
-        {/* TAB 1: OFFERINGS */}
         {activeTab === "offerings" && (
           <div className="admin-grid">
             <form onSubmit={handleSaveOffering} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
@@ -1143,7 +1142,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
           </div>
         )}
 
-        {/* TAB 2: GALLERY */}
         {activeTab === "gallery" && (
           <div className="admin-grid">
             <form onSubmit={handleSaveGalleryItem} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
@@ -1188,7 +1186,6 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
           </div>
         )}
 
-        {/* TAB 3: CUSTOMER INQUIRIES / EMAILS */}
         {activeTab === "inquiries" && (
           <div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.5rem" }}>Customer Booking Inquiries ({inquiriesList.length})</h3>
@@ -1200,9 +1197,18 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
                   <div key={inq.id} style={{ background: C.white, padding: "1.5rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
                     <div>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, fontSize: "1.1rem", marginBottom: "0.3rem" }}>{inq.name}</div>
-                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: C.textMid, marginBottom: "0.2rem" }}>📅 <strong>Dates:</strong> {inq.dates} | 🏕️ <strong>Campers:</strong> {inq.guests} | 🏷️ <strong>Package:</strong> {inq.pkg}</div>
-                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: C.text, background: C.cream, padding: "0.75rem", borderRadius: "4px", marginTop: "0.5rem" }}>💬 "{inq.message || 'No additional notes'}"</div>
-                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", color: C.textLight, marginTop: "0.5rem" }}>Received: {inq.created_at ? new Date(inq.created_at).toLocaleString() : "Recently"}</div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: C.textMid, marginBottom: "0.2rem" }}>
+                        📞 <strong>Phone:</strong> {inq.phone || "Not provided"} | ✉️ <strong>Email:</strong> {inq.email || "Not provided"}
+                      </div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: C.textMid, marginBottom: "0.2rem" }}>
+                        📅 <strong>Dates:</strong> {inq.dates} | 🏕️ <strong>Campers:</strong> {inq.guests} | 🏷️ <strong>Package:</strong> {inq.pkg}
+                      </div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: C.text, background: C.cream, padding: "0.75rem", borderRadius: "4px", marginTop: "0.5rem" }}>
+                        💬 "{inq.message || 'No additional notes'}"
+                      </div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", color: C.textLight, marginTop: "0.5rem" }}>
+                        Received: {inq.created_at ? new Date(inq.created_at).toLocaleString() : "Recently"}
+                      </div>
                     </div>
                     <Btn sm v="danger" onClick={() => deleteInquiry(inq.id)}>Delete</Btn>
                   </div>
@@ -1265,13 +1271,12 @@ function Footer({ setPage }) {
   );
 }
 
-// ── Main App (Fetches Real-Time Data from Supabase) ───────────────────
+// ── Main App ──────────────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("home");
   const [offerings, setOfferings] = useState([]);
   const [gallery, setGallery] = useState([]);
 
-  // Fetch Offerings from Supabase DB
   const fetchOfferings = async () => {
     try {
       const { data, error } = await supabase.from("offerings").select("*").order("created_at", { ascending: true });
@@ -1282,7 +1287,6 @@ export default function App() {
     }
   };
 
-  // Fetch Gallery Assets from Supabase DB
   const fetchGallery = async () => {
     try {
       const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false });
@@ -1313,7 +1317,6 @@ export default function App() {
       case "contact": return <Contact />;
       case "admin": return <AdminPage offerings={offerings} fetchOfferings={fetchOfferings} gallery={gallery} fetchGallery={fetchGallery} />;
       
-      // Dynamic Itinerary Pages
       case "plan-1": return <ItineraryDetail id={1} setPage={nav} />;
       case "plan-2": return <ItineraryDetail id={2} setPage={nav} />;
       case "plan-3": return <ItineraryDetail id={3} setPage={nav} />;
