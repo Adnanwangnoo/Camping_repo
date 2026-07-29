@@ -401,7 +401,7 @@ function Strip() {
   );
 }
 
-// ── Mobile About Section (Story -> Logos -> Cards) ────────────────────
+// ── Mobile About Section ──────────────────────────────────────────────
 function About() {
   const schools = [
     { name: "Kashmir Harvard", sub: "Educational Institute", logo: "/images/Screenshot 2026-07-28 225712.png" },
@@ -412,8 +412,6 @@ function About() {
   return (
     <section className="section-padded" style={{ background: C.creamDark, padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        
-        {/* ── 1. STARTING PARAGRAPH: STORY & EXPERTISE ── */}
         <div style={{ marginBottom: "3.5rem" }}>
           <SectionLabel>Our Story & Expertise</SectionLabel>
           <Divider />
@@ -423,12 +421,10 @@ function About() {
           </p>
         </div>
 
-        {/* ── 2. TRUSTED BY LEADING EDUCATIONAL INSTITUTIONS (LOGOS ROW) ── */}
         <div style={{ marginBottom: "4.5rem", paddingBottom: "3.5rem", borderBottom: `1px solid ${C.creamMid}`, textAlign: "center" }}>
           <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", letterSpacing: "0.2em", textTransform: "uppercase", color: C.forestLight, fontWeight: 700, marginBottom: "1.5rem" }}>
             Trusted by Leading Educational Institutions
           </div>
-          
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.5rem", alignItems: "center", justifyContent: "center" }}>
             {schools.map((s, i) => (
               <div key={i} className="lift" style={{ background: C.white, padding: "1.5rem 1rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "110px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
@@ -449,7 +445,6 @@ function About() {
           </div>
         </div>
 
-        {/* ── 3. SCANNABLE UX CARDS BELOW LOGOS ── */}
         <div className="about-cards-grid" style={{ marginTop: "0" }}>
           <div className="lift" style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
             <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📍</div>
@@ -475,7 +470,6 @@ function About() {
             </p>
           </div>
         </div>
-
       </div>
     </section>
   );
@@ -483,7 +477,7 @@ function About() {
 
 // ── Offerings Component (Reads from Supabase) ─────────────────────────
 function OfferingsPage({ setPage, offerings }) {
-  const list = Array.isArray(offerings) ? offerings : DEFAULT_OFFERINGS;
+  const list = Array.isArray(offerings) && offerings.length > 0 ? offerings : DEFAULT_OFFERINGS;
   return (
     <section className="section-padded" style={{ background: C.cream, padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -708,7 +702,7 @@ function ItineraryDetail({ id, setPage }) {
 
 // ── Gallery Component (Reads from Supabase - Images Only) ───────────────
 function Gallery({ gallery }) {
-  const list = Array.isArray(gallery) ? gallery : DEFAULT_GALLERY;
+  const list = Array.isArray(gallery) && gallery.length > 0 ? gallery : DEFAULT_GALLERY;
   const [sel, setSel] = useState(null);
 
   return (
@@ -873,7 +867,7 @@ function Contact() {
   );
 }
 
-// ── Protected Admin Panel (Email/Password & Safe Null Checks) ─────────
+// ── Protected Admin Panel (Add, Edit, Delete Offerings & Photos) ───────
 function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem("aru_admin_auth") === "true");
   const [emailInput, setEmailInput] = useState("");
@@ -883,11 +877,14 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [activeTab, setActiveTab] = useState("offerings");
   const [inquiries, setInquiries] = useState([]);
 
-  const [offForm, setOffForm] = useState({ name: "", dur: "", aud: "", icon: "⛺", feats: "" });
+  // Form & Editing States
+  const [offForm, setOffForm] = useState({ name: "", dur: "", aud: "", icon: "⛺", feats: "", pop: false });
+  const [editingOfferingId, setEditingOfferingId] = useState(null);
+
   const [galForm, setGalForm] = useState({ cap: "" });
   const [fileToUpload, setFileToUpload] = useState(null);
+  const [editingGalleryId, setEditingGalleryId] = useState(null);
 
-  // Secure Admin Credentials
   const ADMIN_EMAIL = "adshwa1234@gmail.com";
   const ADMIN_PASSWORD = "aru2026";
 
@@ -906,11 +903,8 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const fetchInquiries = async () => {
     try {
       const { data, error } = await supabase.from("inquiries").select("*").order("created_at", { ascending: false });
-      if (!error && Array.isArray(data)) {
-        setInquiries(data);
-      } else {
-        setInquiries([]);
-      }
+      if (!error && Array.isArray(data)) setInquiries(data);
+      else setInquiries([]);
     } catch (e) {
       setInquiries([]);
     }
@@ -920,71 +914,150 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
     if (isAuthenticated) fetchInquiries();
   }, [isAuthenticated]);
 
-  const addOffering = async (e) => {
+  // ── OFFERINGS CRUD ──────────────────────────────────────────
+  const handleSaveOffering = async (e) => {
     e.preventDefault();
-    if (!offForm.name || !offForm.dur) return;
+    if (!offForm.name || !offForm.dur) return alert("Please provide a Title and Duration!");
 
-    const { error } = await supabase.from("offerings").insert([{
-      name: offForm.name,
-      dur: offForm.dur,
-      aud: offForm.aud || "All Campers",
-      icon: offForm.icon || "⛺",
-      feats: (offForm.feats || "").split(",").map(f => f.trim()).filter(f => f)
-    }]);
+    const featsArray = typeof offForm.feats === "string" 
+      ? offForm.feats.split(",").map(f => f.trim()).filter(f => f)
+      : offForm.feats;
 
-    if (error) alert("Error adding offering: " + error.message);
-    else {
-      setOffForm({ name: "", dur: "", aud: "", icon: "⛺", feats: "" });
-      fetchOfferings();
+    if (editingOfferingId) {
+      // UPDATE
+      const { error } = await supabase.from("offerings").update({
+        name: offForm.name,
+        dur: offForm.dur,
+        aud: offForm.aud || "All Campers",
+        icon: offForm.icon || "⛺",
+        feats: featsArray,
+        pop: offForm.pop
+      }).eq("id", editingOfferingId);
+
+      if (error) alert("Error updating offering: " + error.message);
+      else {
+        alert("Offering updated successfully!");
+        setEditingOfferingId(null);
+        setOffForm({ name: "", dur: "", aud: "", icon: "⛺", feats: "", pop: false });
+        fetchOfferings();
+      }
+    } else {
+      // CREATE
+      const { error } = await supabase.from("offerings").insert([{
+        name: offForm.name,
+        dur: offForm.dur,
+        aud: offForm.aud || "All Campers",
+        icon: offForm.icon || "⛺",
+        feats: featsArray,
+        pop: offForm.pop
+      }]);
+
+      if (error) alert("Error adding offering: " + error.message);
+      else {
+        alert("Offering added successfully!");
+        setOffForm({ name: "", dur: "", aud: "", icon: "⛺", feats: "", pop: false });
+        fetchOfferings();
+      }
     }
+  };
+
+  const startEditOffering = (o) => {
+    setEditingOfferingId(o.id);
+    setOffForm({
+      name: o.name || "",
+      dur: o.dur || "",
+      aud: o.aud || "",
+      icon: o.icon || "⛺",
+      feats: Array.isArray(o.feats) ? o.feats.join(", ") : (o.feats || ""),
+      pop: !!o.pop
+    });
+  };
+
+  const cancelEditOffering = () => {
+    setEditingOfferingId(null);
+    setOffForm({ name: "", dur: "", aud: "", icon: "⛺", feats: "", pop: false });
   };
 
   const deleteOffering = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this offering?")) return;
     const { error } = await supabase.from("offerings").delete().eq("id", id);
     if (!error) fetchOfferings();
+    else alert("Error deleting offering: " + error.message);
   };
 
-  const addGalleryItem = async (e) => {
+  // ── GALLERY CRUD ─────────────────────────────────────────────
+  const handleSaveGalleryItem = async (e) => {
     e.preventDefault();
-    if (!fileToUpload || !galForm.cap) return alert("Please select an image file and caption!");
+    if (!galForm.cap) return alert("Please enter a caption!");
 
-    try {
-      setUploading(true);
-      const fileExt = fileToUpload.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `uploads/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage.from('aru-media').upload(filePath, fileToUpload);
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage.from('aru-media').getPublicUrl(filePath);
-      const publicUrl = urlData.publicUrl;
-
-      const { error: dbError } = await supabase.from('gallery').insert([{
-        type: "image",
-        url: publicUrl,
+    if (editingGalleryId) {
+      // UPDATE CAPTION
+      const { error } = await supabase.from("gallery").update({
         cap: galForm.cap
-      }]);
+      }).eq("id", editingGalleryId);
 
-      if (dbError) throw dbError;
+      if (error) alert("Error updating caption: " + error.message);
+      else {
+        alert("Caption updated successfully!");
+        setEditingGalleryId(null);
+        setGalForm({ cap: "" });
+        fetchGallery();
+      }
+    } else {
+      // CREATE / UPLOAD NEW IMAGE
+      if (!fileToUpload) return alert("Please select an image file!");
 
-      setGalForm({ cap: "" });
-      setFileToUpload(null);
-      fetchGallery();
-      alert("Image uploaded successfully!");
-    } catch (err) {
-      alert("Upload failed: " + err.message);
-    } finally {
-      setUploading(false);
+      try {
+        setUploading(true);
+        const fileExt = fileToUpload.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage.from('aru-media').upload(filePath, fileToUpload);
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage.from('aru-media').getPublicUrl(filePath);
+        const publicUrl = urlData.publicUrl;
+
+        const { error: dbError } = await supabase.from('gallery').insert([{
+          type: "image",
+          url: publicUrl,
+          cap: galForm.cap
+        }]);
+
+        if (dbError) throw dbError;
+
+        setGalForm({ cap: "" });
+        setFileToUpload(null);
+        fetchGallery();
+        alert("Image uploaded successfully!");
+      } catch (err) {
+        alert("Upload failed: " + err.message);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
+  const startEditGallery = (g) => {
+    setEditingGalleryId(g.id);
+    setGalForm({ cap: g.cap || "" });
+  };
+
+  const cancelEditGallery = () => {
+    setEditingGalleryId(null);
+    setGalForm({ cap: "" });
+  };
+
   const deleteGalleryItem = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this photo?")) return;
     const { error } = await supabase.from("gallery").delete().eq("id", id);
     if (!error) fetchGallery();
+    else alert("Error deleting photo: " + error.message);
   };
 
   const deleteInquiry = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this inquiry?")) return;
     const { error } = await supabase.from("inquiries").delete().eq("id", id);
     if (!error) fetchInquiries();
   };
@@ -1020,21 +1093,35 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
 
         {/* Tab Switcher */}
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "2.5rem", flexWrap: "wrap" }}>
-          <Btn v={activeTab === "offerings" ? "primary" : "outline"} onClick={() => setActiveTab("offerings")}>Manage Offerings ({offeringsList.length})</Btn>
-          <Btn v={activeTab === "gallery" ? "primary" : "outline"} onClick={() => setActiveTab("gallery")}>Manage Gallery ({galleryList.length})</Btn>
+          <Btn v={activeTab === "offerings" ? "primary" : "outline"} onClick={() => { setActiveTab("offerings"); cancelEditOffering(); }}>Manage Offerings ({offeringsList.length})</Btn>
+          <Btn v={activeTab === "gallery" ? "primary" : "outline"} onClick={() => { setActiveTab("gallery"); cancelEditGallery(); }}>Manage Gallery ({galleryList.length})</Btn>
           <Btn v={activeTab === "inquiries" ? "primary" : "outline"} onClick={() => { setActiveTab("inquiries"); fetchInquiries(); }}>Customer Inquiries / Emails ({inquiriesList.length})</Btn>
         </div>
 
         {/* TAB 1: OFFERINGS */}
         {activeTab === "offerings" && (
           <div className="admin-grid">
-            <form onSubmit={addOffering} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.0rem" }}>+ Add Offering</h3>
-              <Input label="Title *" value={offForm.name} onChange={e => setOffForm({ ...offForm, name: e.target.value })} />
-              <Input label="Duration *" value={offForm.dur} onChange={e => setOffForm({ ...offForm, dur: e.target.value })} />
-              <Input label="Features (comma separated)" value={offForm.feats} onChange={e => setOffForm({ ...offForm, feats: e.target.value })} multi />
-              <Btn full type="submit" v="gold">Save to Database</Btn>
+            <form onSubmit={handleSaveOffering} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.0rem" }}>
+                {editingOfferingId ? "✏️ Edit Offering Details" : "+ Add New Offering"}
+              </h3>
+              <Input label="Title *" value={offForm.name} onChange={e => setOffForm({ ...offForm, name: e.target.value })} placeholder="e.g. Base Camp Stay" />
+              <Input label="Duration *" value={offForm.dur} onChange={e => setOffForm({ ...offForm, dur: e.target.value })} placeholder="e.g. 2D / 1N" />
+              <Input label="Target Audience" value={offForm.aud} onChange={e => setOffForm({ ...offForm, aud: e.target.value })} placeholder="e.g. Families & College Groups" />
+              <Input label="Icon Emoji" value={offForm.icon} onChange={e => setOffForm({ ...offForm, icon: e.target.value })} placeholder="⛺" />
+              <Input label="Features (comma separated)" value={offForm.feats} onChange={e => setOffForm({ ...offForm, feats: e.target.value })} placeholder="Swiss Tent Stay, Bonfire Evening, Pony Ride" multi />
+              
+              <div style={{ marginBottom: "1.2rem", display: "flex", alignItems: "center", gap: "8px" }}>
+                <input type="checkbox" id="pop" checked={offForm.pop} onChange={e => setOffForm({ ...offForm, pop: e.target.checked })} />
+                <label htmlFor="pop" style={{ fontSize: "0.85rem", color: C.textMid, cursor: "pointer" }}>Mark as "Most Popular" package</label>
+              </div>
+
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <Btn full type="submit" v="gold">{editingOfferingId ? "Update Package" : "Save to Database"}</Btn>
+                {editingOfferingId && <Btn v="outline" onClick={cancelEditOffering}>Cancel</Btn>}
+              </div>
             </form>
+
             <div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1rem" }}>Active Offerings</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -1043,8 +1130,12 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
                     <div>
                       <strong style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, fontSize: "1.1rem" }}>{o.icon} {o.name}</strong>
                       <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.8rem", color: C.textLight, marginTop: "4px" }}>⏳ {o.dur} | 🎯 {o.aud}</div>
+                      {o.pop && <span style={{ fontSize: "0.65rem", color: C.gold, fontWeight: 700, textTransform: "uppercase" }}>★ Popular Package</span>}
                     </div>
-                    <Btn sm v="danger" onClick={() => deleteOffering(o.id)}>Delete</Btn>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <Btn sm v="outline" onClick={() => startEditOffering(o)}>Edit</Btn>
+                      <Btn sm v="danger" onClick={() => deleteOffering(o.id)}>Delete</Btn>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1055,19 +1146,28 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
         {/* TAB 2: GALLERY */}
         {activeTab === "gallery" && (
           <div className="admin-grid">
-            <form onSubmit={addGalleryItem} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.0rem" }}>+ Upload Photo</h3>
+            <form onSubmit={handleSaveGalleryItem} style={{ background: C.white, padding: "2rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px" }}>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.0rem" }}>
+                {editingGalleryId ? "✏️ Edit Photo Caption" : "+ Upload New Photo"}
+              </h3>
               
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ fontSize: "0.7rem", textTransform: "uppercase", color: C.textLight }}>Select Image File *</label>
-                <input type="file" accept="image/*" onChange={(e) => setFileToUpload(e.target.files[0])} style={{ display: "block", marginTop: "6px" }} />
-              </div>
+              {!editingGalleryId && (
+                <div style={{ marginBottom: "1rem" }}>
+                  <label style={{ fontSize: "0.7rem", textTransform: "uppercase", color: C.textLight }}>Select Image File *</label>
+                  <input type="file" accept="image/*" onChange={(e) => setFileToUpload(e.target.files[0])} style={{ display: "block", marginTop: "6px" }} />
+                </div>
+              )}
 
               <Input label="Caption *" value={galForm.cap} onChange={e => setGalForm({ ...galForm, cap: e.target.value })} placeholder="e.g., Evening Campfire" />
-              <Btn full type="submit" v="gold" disabled={uploading}>
-                {uploading ? "Uploading to Cloud..." : "Upload Image to Supabase"}
-              </Btn>
+              
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <Btn full type="submit" v="gold" disabled={uploading}>
+                  {uploading ? "Uploading to Cloud..." : (editingGalleryId ? "Update Caption" : "Upload Image to Supabase")}
+                </Btn>
+                {editingGalleryId && <Btn v="outline" onClick={cancelEditGallery}>Cancel</Btn>}
+              </div>
             </form>
+
             <div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1rem" }}>Live Gallery Photos ({galleryList.length})</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "500px", overflowY: "auto", paddingRight: "5px" }}>
@@ -1077,7 +1177,10 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
                       <img src={g.url} alt={g.cap} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }} />
                       <span style={{ fontSize: "0.85rem", color: C.forest, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{g.cap}</span>
                     </div>
-                    <Btn sm v="danger" onClick={() => deleteGalleryItem(g.id)}>Delete</Btn>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <Btn sm v="outline" onClick={() => startEditGallery(g)}>Edit</Btn>
+                      <Btn sm v="danger" onClick={() => deleteGalleryItem(g.id)}>Delete</Btn>
+                    </div>
                   </div>
                 ))}
               </div>
