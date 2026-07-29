@@ -292,13 +292,7 @@ function Input({ label, value, onChange, type = "text", placeholder, multi = fal
   );
 }
 
-function Alert({ type, children }) {
-  const colors = { success: { bg: "#2a524018", border: "#3a6b5040", color: C.forestMid }, info: { bg: `${C.forest}12`, border: `${C.forest}30`, color: C.forest } };
-  const c = colors[type] || colors.info;
-  return <div style={{ background: c.bg, border: `1px solid ${c.border}`, padding: "0.8rem", marginBottom: "1rem", fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: c.color, borderRadius: "4px" }}>{children}</div>;
-}
-
-// ── Navbar ────────────────────────────────────────────────────────────
+// ── Navbar (Auto-locks Admin Session when navigating away) ────────────
 function Navbar({ page, setPage }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = ["Home", "About", "Offerings", "Gallery", "Treks", "Student", "Feedback", "Admin"];
@@ -489,6 +483,7 @@ function About() {
 
 // ── Offerings Component (Reads from Supabase) ─────────────────────────
 function OfferingsPage({ setPage, offerings }) {
+  const list = Array.isArray(offerings) ? offerings : DEFAULT_OFFERINGS;
   return (
     <section className="section-padded" style={{ background: C.cream, padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -498,14 +493,14 @@ function OfferingsPage({ setPage, offerings }) {
           <SectionTitle center>Camping Packages</SectionTitle>
         </div>
         <div className="packages-grid">
-          {offerings.map((p) => (
+          {list.map((p) => (
             <div key={p.id} className="lift" style={{ background: p.pop ? C.forest : C.white, border: `2px solid ${p.pop ? C.forest : C.creamMid}`, padding: "2rem", position: "relative", borderRadius: "8px" }}>
               {p.pop && <div style={{ position: "absolute", top: "-1px", left: "1.5rem", background: C.gold, color: C.white, padding: "0.18rem 0.75rem", fontFamily: "'Lato', sans-serif", fontSize: "0.62rem", letterSpacing: "0.15em", fontWeight: 700, textTransform: "uppercase", borderRadius: "0 0 4px 4px" }}>Most Popular</div>}
               <div style={{ fontSize: "2rem", marginBottom: "0.8rem" }}>{p.icon || "⛺"}</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "1.15rem", color: p.pop ? C.cream : C.forest, marginBottom: "0.2rem" }}>{p.name}</div>
               <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.68rem", color: p.pop ? "rgba(245,240,232,0.55)" : C.textLight, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "1.5rem" }}>{p.aud} · {p.dur}</div>
               <ul style={{ listStyle: "none", padding: 0, marginBottom: "1.7rem" }}>
-                {p.feats && p.feats.map((f, i) => (
+                {Array.isArray(p.feats) && p.feats.map((f, i) => (
                   <li key={i} style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: p.pop ? "rgba(245,240,232,0.78)" : C.textMid, padding: "0.38rem 0", borderBottom: `1px solid ${p.pop ? "rgba(245,240,232,0.1)" : C.creamMid}` }}>
                     <span style={{ color: p.pop ? C.goldLight : C.forest, marginRight: "0.55rem" }}>✓</span>{f}
                   </li>
@@ -713,6 +708,7 @@ function ItineraryDetail({ id, setPage }) {
 
 // ── Gallery Component (Reads from Supabase - Images Only) ───────────────
 function Gallery({ gallery }) {
+  const list = Array.isArray(gallery) ? gallery : DEFAULT_GALLERY;
   const [sel, setSel] = useState(null);
 
   return (
@@ -724,7 +720,7 @@ function Gallery({ gallery }) {
           <SectionTitle center>Life at Aru Camp</SectionTitle>
         </div>
         <div className="gallery-grid">
-          {gallery.map((media, i) => (
+          {list.map((media, i) => (
             <div key={media.id || i} style={{ position: "relative", overflow: "hidden", cursor: "pointer", aspectRatio: "1/1", borderRadius: "6px" }} onClick={() => setSel(media)}>
               <img src={media.url} alt={media.cap} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.7rem", background: "linear-gradient(to top,rgba(30,61,47,.8),transparent)", fontFamily: "'Lato', sans-serif", fontSize: "0.75rem", color: C.cream }}>{media.cap}</div>
@@ -877,7 +873,7 @@ function Contact() {
   );
 }
 
-// ── Protected Admin Panel (Email/Password & Auto-Lock on Exit) ────────
+// ── Protected Admin Panel (Email/Password & Safe Null Checks) ─────────
 function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem("aru_admin_auth") === "true");
   const [emailInput, setEmailInput] = useState("");
@@ -887,16 +883,13 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [activeTab, setActiveTab] = useState("offerings");
   const [inquiries, setInquiries] = useState([]);
 
-  // Default Secure Admin Credentials
+  const [offForm, setOffForm] = useState({ name: "", dur: "", aud: "", icon: "⛺", feats: "" });
+  const [galForm, setGalForm] = useState({ cap: "" });
+  const [fileToUpload, setFileToUpload] = useState(null);
+
+  // Secure Admin Credentials
   const ADMIN_EMAIL = "adshwa1234@gmail.com";
   const ADMIN_PASSWORD = "aru2026";
-
-  // Automatically lock the admin section when navigating away or unmounting
-  useEffect(() => {
-    return () => {
-      sessionStorage.removeItem("aru_admin_auth");
-    };
-  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -911,8 +904,16 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   };
 
   const fetchInquiries = async () => {
-    const { data, error } = await supabase.from("inquiries").select("*").order("created_at", { ascending: false });
-    if (!error && data) setInquiries(data);
+    try {
+      const { data, error } = await supabase.from("inquiries").select("*").order("created_at", { ascending: false });
+      if (!error && Array.isArray(data)) {
+        setInquiries(data);
+      } else {
+        setInquiries([]);
+      }
+    } catch (e) {
+      setInquiries([]);
+    }
   };
 
   useEffect(() => {
@@ -928,7 +929,7 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
       dur: offForm.dur,
       aud: offForm.aud || "All Campers",
       icon: offForm.icon || "⛺",
-      feats: offForm.feats.split(",").map(f => f.trim()).filter(f => f)
+      feats: (offForm.feats || "").split(",").map(f => f.trim()).filter(f => f)
     }]);
 
     if (error) alert("Error adding offering: " + error.message);
@@ -1005,6 +1006,10 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
     );
   }
 
+  const offeringsList = Array.isArray(offerings) ? offerings : [];
+  const galleryList = Array.isArray(gallery) ? gallery : [];
+  const inquiriesList = Array.isArray(inquiries) ? inquiries : [];
+
   return (
     <section className="section-padded" style={{ background: C.creamDark, padding: "6rem 2rem", minHeight: "85vh" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -1015,9 +1020,9 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
 
         {/* Tab Switcher */}
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "2.5rem", flexWrap: "wrap" }}>
-          <Btn v={activeTab === "offerings" ? "primary" : "outline"} onClick={() => setActiveTab("offerings")}>Manage Offerings ({offerings.length})</Btn>
-          <Btn v={activeTab === "gallery" ? "primary" : "outline"} onClick={() => setActiveTab("gallery")}>Manage Gallery ({gallery.length})</Btn>
-          <Btn v={activeTab === "inquiries" ? "primary" : "outline"} onClick={() => { setActiveTab("inquiries"); fetchInquiries(); }}>Customer Inquiries / Emails ({inquiries.length})</Btn>
+          <Btn v={activeTab === "offerings" ? "primary" : "outline"} onClick={() => setActiveTab("offerings")}>Manage Offerings ({offeringsList.length})</Btn>
+          <Btn v={activeTab === "gallery" ? "primary" : "outline"} onClick={() => setActiveTab("gallery")}>Manage Gallery ({galleryList.length})</Btn>
+          <Btn v={activeTab === "inquiries" ? "primary" : "outline"} onClick={() => { setActiveTab("inquiries"); fetchInquiries(); }}>Customer Inquiries / Emails ({inquiriesList.length})</Btn>
         </div>
 
         {/* TAB 1: OFFERINGS */}
@@ -1033,7 +1038,7 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
             <div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1rem" }}>Active Offerings</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {offerings.map((o) => (
+                {offeringsList.map((o) => (
                   <div key={o.id} style={{ background: C.white, padding: "1.5rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
                     <div>
                       <strong style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, fontSize: "1.1rem" }}>{o.icon} {o.name}</strong>
@@ -1064,9 +1069,9 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
               </Btn>
             </form>
             <div>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1rem" }}>Live Gallery Photos ({gallery.length})</h3>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1rem" }}>Live Gallery Photos ({galleryList.length})</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "500px", overflowY: "auto", paddingRight: "5px" }}>
-                {gallery.map((g) => (
+                {galleryList.map((g) => (
                   <div key={g.id} style={{ background: C.white, padding: "1rem", border: `1px solid ${C.creamMid}`, borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", overflow: "hidden" }}>
                       <img src={g.url} alt={g.cap} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }} />
@@ -1083,18 +1088,18 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
         {/* TAB 3: CUSTOMER INQUIRIES / EMAILS */}
         {activeTab === "inquiries" && (
           <div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.5rem" }}>Customer Booking Inquiries ({inquiries.length})</h3>
-            {inquiries.length === 0 ? (
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "1.5rem" }}>Customer Booking Inquiries ({inquiriesList.length})</h3>
+            {inquiriesList.length === 0 ? (
               <p style={{ fontFamily: "'Lato', sans-serif", color: C.textLight }}>No inquiries received yet.</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {inquiries.map((inq) => (
+                {inquiriesList.map((inq) => (
                   <div key={inq.id} style={{ background: C.white, padding: "1.5rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
                     <div>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, fontSize: "1.1rem", marginBottom: "0.3rem" }}>{inq.name}</div>
                       <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.82rem", color: C.textMid, marginBottom: "0.2rem" }}>📅 <strong>Dates:</strong> {inq.dates} | 🏕️ <strong>Campers:</strong> {inq.guests} | 🏷️ <strong>Package:</strong> {inq.pkg}</div>
                       <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.85rem", color: C.text, background: C.cream, padding: "0.75rem", borderRadius: "4px", marginTop: "0.5rem" }}>💬 "{inq.message || 'No additional notes'}"</div>
-                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", color: C.textLight, marginTop: "0.5rem" }}>Received: {new Date(inq.created_at).toLocaleString()}</div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: "0.7rem", color: C.textLight, marginTop: "0.5rem" }}>Received: {inq.created_at ? new Date(inq.created_at).toLocaleString() : "Recently"}</div>
                     </div>
                     <Btn sm v="danger" onClick={() => deleteInquiry(inq.id)}>Delete</Btn>
                   </div>
@@ -1165,16 +1170,24 @@ export default function App() {
 
   // Fetch Offerings from Supabase DB
   const fetchOfferings = async () => {
-    const { data, error } = await supabase.from("offerings").select("*").order("created_at", { ascending: true });
-    if (!error && data.length > 0) setOfferings(data);
-    else setOfferings(DEFAULT_OFFERINGS);
+    try {
+      const { data, error } = await supabase.from("offerings").select("*").order("created_at", { ascending: true });
+      if (!error && Array.isArray(data) && data.length > 0) setOfferings(data);
+      else setOfferings(DEFAULT_OFFERINGS);
+    } catch (e) {
+      setOfferings(DEFAULT_OFFERINGS);
+    }
   };
 
   // Fetch Gallery Assets from Supabase DB
   const fetchGallery = async () => {
-    const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false });
-    if (!error && data.length > 0) setGallery(data);
-    else setGallery(DEFAULT_GALLERY);
+    try {
+      const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false });
+      if (!error && Array.isArray(data) && data.length > 0) setGallery(data);
+      else setGallery(DEFAULT_GALLERY);
+    } catch (e) {
+      setGallery(DEFAULT_GALLERY);
+    }
   };
 
   useEffect(() => {
