@@ -303,7 +303,13 @@ function Navbar({ page, setPage }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = ["Home", "About", "Offerings", "Gallery", "Treks", "Student", "Feedback", "Admin"];
 
-  const navTo = (p) => { setPage(p); setMenuOpen(false); };
+  const navTo = (p) => { 
+    if (page === "admin" && p !== "admin") {
+      sessionStorage.removeItem("aru_admin_auth");
+    }
+    setPage(p); 
+    setMenuOpen(false); 
+  };
 
   return (
     <>
@@ -871,24 +877,30 @@ function Contact() {
   );
 }
 
-// ── Protected Admin Panel (Offerings, Gallery Images, & Inquiries) ─────
+// ── Protected Admin Panel (Email/Password & Auto-Lock on Exit) ────────
 function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem("aru_admin_auth") === "true");
-  const [pinInput, setPinInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState("offerings");
   const [inquiries, setInquiries] = useState([]);
 
-  const [offForm, setOffForm] = useState({ name: "", dur: "", aud: "", icon: "⛺", feats: "" });
-  const [galForm, setGalForm] = useState({ cap: "" });
-  const [fileToUpload, setFileToUpload] = useState(null);
+  // Default Secure Admin Credentials
+  const ADMIN_EMAIL = "adshwa1234@gmail.com";
+  const ADMIN_PASSWORD = "aru2026";
 
-  const ADMIN_SECRET_PIN = "aru2026";
+  // Automatically lock the admin section when navigating away or unmounting
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("aru_admin_auth");
+    };
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (pinInput === ADMIN_SECRET_PIN) {
+    if (emailInput.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && passwordInput === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       sessionStorage.setItem("aru_admin_auth", "true");
       setError(false);
@@ -982,9 +994,10 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
         <div style={{ maxWidth: "420px", width: "100%", background: C.white, padding: "2.5rem", border: `1px solid ${C.creamMid}`, borderRadius: "8px", textAlign: "center" }}>
           <div style={{ fontSize: "2.8rem", marginBottom: "1rem" }}>🔒</div>
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", color: C.forest, marginBottom: "0.5rem" }}>Admin Security Gate</h2>
-          {error && <div style={{ color: C.red, marginBottom: "1rem", fontWeight: 700 }}>⚠️ Invalid PIN</div>}
+          {error && <div style={{ color: C.red, marginBottom: "1rem", fontWeight: 700 }}>⚠️ Invalid Email or Password</div>}
           <form onSubmit={handleLogin}>
-            <input type="password" placeholder="Enter Security PIN" value={pinInput} onChange={(e) => setPinInput(e.target.value)} style={{ width: "100%", padding: "0.75rem", fontSize: "1.1rem", textAlign: "center", marginBottom: "1.2rem", borderRadius: "4px", border: `1px solid ${C.creamMid}` }} />
+            <input type="email" placeholder="Admin Email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} style={{ width: "100%", padding: "0.75rem", fontSize: "1rem", marginBottom: "0.8rem", borderRadius: "4px", border: `1px solid ${C.creamMid}`, boxSizing: "border-box" }} required />
+            <input type="password" placeholder="Admin Password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} style={{ width: "100%", padding: "0.75rem", fontSize: "1rem", marginBottom: "1.2rem", borderRadius: "4px", border: `1px solid ${C.creamMid}`, boxSizing: "border-box" }} required />
             <Btn full type="submit" v="primary">Unlock Panel</Btn>
           </form>
         </div>
@@ -997,7 +1010,7 @@ function AdminPage({ offerings, fetchOfferings, gallery, fetchGallery }) {
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
           <SectionTitle>Supabase Admin Portal</SectionTitle>
-          <Btn sm v="danger" onClick={() => { sessionStorage.removeItem("aru_admin_auth"); setIsAuthenticated(false); }}>Lock</Btn>
+          <Btn sm v="danger" onClick={() => { sessionStorage.removeItem("aru_admin_auth"); setIsAuthenticated(false); }}>Lock Session Now</Btn>
         </div>
 
         {/* Tab Switcher */}
